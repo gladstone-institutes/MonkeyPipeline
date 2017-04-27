@@ -1,0 +1,49 @@
+#!/usr/bin/Rscript
+
+# Makes the R figures that look like "AN.1_geneWindows_sum.pdf"
+# It's basically a density plot / histogram of read density (Y-axis) vs gene body position (X-axis).
+
+# Expects THREE command line arguments, which are passed in by 09.windows.pl, which is (in turn) called from bananas.pm
+
+options(error=traceback) # useful even non-interactively
+#options(error=recover)
+
+args         <- commandArgs(TRUE)
+allFile      <- args[1]
+sumPdfFile   <- args[2]
+wd           <- args[3]
+
+setwd(wd)
+d <- read.delim(allFile,header=F)
+
+bc <- c(0.1000,0.1000,0.3)
+wc <- c(1,1,1)
+yc <- c(1,1,0)
+xc <- 1:100/100
+cvWB <- rgb((bc[1]-wc[1])*xc+wc[1], (bc[2]-wc[2])*xc+wc[2], (bc[3]-wc[3])*xc+wc[3])
+
+n <- as.matrix(d[,6:dim(d)[2]])
+s <- apply(n,2,mean)
+
+# ========================================================
+# Generate the output PDF file, probably named something like "SAMPLENAME_geneWindows_sum.pdf",
+# showing where read coverage falls relative to position in the gene, from the TSS to the gene end (term).
+pdf(sumPdfFile)
+plot(s,lwd=3,axes=F,type="l",xlab="",ylab="",ylim=c(min(s),max(s)))
+axis(1,at=c(0,20,120,140),labels=c("-20%","TSS","term","+20%"),las=3)
+axis(2)
+dev.off()
+# ========================================================
+
+# Alternative y-axis scaled version of above added by Alex Jan 2016
+# This is the SAME figure, except the Y-axis is always from 20% to 60%, so you can easily compare between samples.
+pdf2 <- sumPdfFile
+pdf2 <- sub("[.]pdf$", "_20_to_60_percent_scale.pdf", ignore.case=T, perl=T)
+pdf(pdf2)
+MIN_Y = 20 # Hard-coded so all of these have the same scale
+MAX_Y = 60 # Hard-coded so all of these have the same scale
+plot(s,lwd=3,axes=F,type="l",xlab="Position",ylab="Percent",ylim=c(MIN_Y, MAX_Y))
+axis(1,at=c(0,20,120,140),labels=c("-20%","TSS","term","+20%"), las=3)
+axis(2)
+dev.off()
+# ========================================================

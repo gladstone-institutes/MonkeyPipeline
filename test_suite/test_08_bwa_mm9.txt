@@ -1,0 +1,83 @@
+studyName    = monkeytest_08_bwa_mm9      # <-- A short, UNIQUE project name. No spaces / weird characters.
+sampleDir    = /data/work/Code/alexgw/monkey_agw/test_suite/test_06_mm9_tiny_files_100_reads
+resultDir    = THIS_IS_SET_AUTOMATICALLY_BY_THE_TEST_SCRIPT
+# sampleDir: the directory with your existing FASTQ.GZ files. Specify the FULL PATH to the directory.
+# resultDir: Monkey will make this directory for the output files. Specify a FULL PATH.
+
+# Below: the possible 'analysis_type' options:
+#       chip: ChIP-seq      <-- set "aligner = bowtie" below for ChIP-seq
+#       atac: ATAC-seq      <-- set "aligner = bowtie" below for ATAC-seq
+#        exo: EXO-seq
+#        rna: RNA-seq
+#      other: Anything else that is similar to ChIP-seq but not actually ChIP-seq (also requires "aligner = bowtie")
+
+# Below: note that for RNASeq, the "sample" field starts with the literal text "sample" (NOT a sample name)
+#        ChIP-seq may have "input" fields that are not "samples"---each "input" should correspond to one sample.
+# Your actual sample name is the "ID.rep"---rep is the replicate number, which can be either any sequence of digits ("09428") or
+# the string ".id<whatever>" (if you want to use letters)--valid examples are: WT.id_FIRST_REP, CTRL.9204, KO.idXYZ, TREAT.97
+# <sample>   <ID.rep#>      <analysis_type>    <inputName>     <fileName(s)>
+sample       a0.0       rna            NA         a00.fq.gz
+sample       a0.1       rna            NA         a01.fq.gz
+sample       a0.2       rna            NA         a02.fq.gz
+sample       a0.3       rna            NA         a03.fq.gz
+sample       a0.4       rna            NA         a04.fq.gz
+sample       a1.0       rna            NA         a10.fq.gz
+sample       a1.1       rna            NA         a11.fq.gz
+sample       a1.2       rna            NA         a12.fq.gz
+sample       a1.3       rna            NA         a13.fq.gz
+sample       a1.4       rna            NA         a14.fq.gz
+
+# ********************************************************************************************
+# ********************************************************************************************
+# ======================= NOTE: bwa is the aligner here! Be aware of this! ===================
+aligner = bwa    #  Set the aligner (must be bowtie or tophat for now).
+                 #  If aligner is tophat, you should have a 'gtfFile' with gene annotation.
+                 #  (Or you can set "gtfFile = NA" for NO GTF file at all.)
+# ********************************************************************************************
+# ********************************************************************************************
+# ********************************************************************************************
+minMapQ = 30     #  Minimum map quality (MAPQ) for reads to NOT be filtered out.
+                 #  This is the "MAPQ" field in the aligned BAM file. "minMapQ = 0" performs NO filtering.
+
+# ********************************************************************************************
+# ********************************************************************************************
+# Note: these are the indexes that DO NOT have 'chr' in the chromosome names, so they WILL NOT WORK FOR THE GENOME BROWSER
+# ********************************************************************************************
+# ********************************************************************************************
+bowtie2Index       = NA         # /data/info/genome/mm9_ensembl_igenome/mm9
+bwaIndex           = /data/info/genome/mm9_ensembl_igenome/Mus_musculus/Ensembl/NCBIM37/Sequence/BWAIndex/genome.fa  # Yes, this actually includes the "fa" as part of the prefix, since that's what the index file names have!
+gtfFile            = /data/info/genome/mm9_ensembl_igenome/mm9_genes.gtf   # Note that "gtfFile = NA" is also a valid way of specifying to NOT use a GTF file. This is generally not recommended.
+genomeFasta        = /data/info/genome/mm9_ensembl_igenome/mm9.fa
+genomeFastaDir     = /data/info/genome/mm9_ensembl_igenome/mm9_per_chr_fasta_dir
+bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/mm9_NCBI37_Ensembl.bed     # Note that "bedAnnotForRSEQC = NA" is also a valid way of specifying to NOT run RSEQC. This is generally not recommended.
+# bedAnnotForRSEQC: if you are using MM10, you have another option: GRCm38_mm10_Ensembl.bed
+libraryAdapterFile = /data/work/Code/alexgw/monkey_agw/support/adapter_seq_to_trim.fasta
+
+# Other example indexes for multiple species:
+#     * ERCC 92 spike-ins: /data/info/genome/ercc/ERCC92  (this is the index name, not the filename)
+#     * Various ribosomes: /data/info/genome/ribosome/ribo  (this is the index name, not the filename)
+
+# ==================================================================================================
+monkeyPoo          = /data/work/Code/alexgw/monkey_agw/bin  # All sub-scripts that we run are here
+
+# Set these options to "TRUE" only if you want to ENTIRELY OMIT that feature.# in the 'monkeyPoo' directory.
+skipQC               = TRUE    # (Default: FALSE) Whether or not to skip the QC steps
+skipWindows          = FALSE   # (Default: FALSE) Set to FALSE for ChIP-seq, or if you care about peaks!
+skipTagsAndDensity   = FALSE   # (Default: FALSE) Set to FALSE for ChIP-seq, or if you care about peaks!
+
+shouldFilterAdapters = TRUE    # Should we filter out the adapter seqs from the input FASTQ files? (Default: TRUE)
+browserBins          = FALSE   # Generate Sean's "binned" UCSC-style browser tracks. (Default: FALSE)
+browserWigs          = FALSE   # Generate Alex's "wiggle" UCSC_style browser tracks. (Default: FALSE)
+
+forceRerun           = FALSE   # (Default: FALSE) "forceRerun = TRUE" causes even COMPLETED tasks
+                               #                  to be re-run (including filtering & alignment!).
+# ==================================================================================================
+# Below: required for browser bins and ChIP-seq
+chromSizesFile      /data/applications/monkey/poo/mm9_chrom.sizes
+genomicBins         /data/applications/monkey/poo/mm9_genomicBins.bed
+genomicBinsID       /data/applications/monkey/poo/mm9_genomicBinsID.bed
+geneWindows         /data/applications/monkey/poo/mm9_ucsc_geneWindows.bed
+exonFile            /data/applications/monkey/poo/mm9_ucsc_exons.bed
+transcriptFile      /data/applications/monkey/poo/mm9_ucsc_transcripts.bed
+symbolXref          /data/applications/monkey/poo/mm9_symbolXref.txt
+repeatMask          /data/applications/monkey/poo/mm9_repeatMask.bed

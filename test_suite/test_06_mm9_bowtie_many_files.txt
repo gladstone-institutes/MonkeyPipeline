@@ -1,0 +1,155 @@
+studyName    = monkeytest_06_many_small_files
+sampleDir    = /data/work/Code/alexgw/monkey_agw/test_suite/test_06_mm9_tiny_files_100_reads
+resultDir    = THIS_IS_SET_AUTOMATICALLY_BY_THE_TEST_SCRIPT
+
+# <sample>   <ID.rep#>   <chip|rna|exo>   <inputName>   <fileName(s)>
+## Note: THESE ARE ALL THE SAME EXACT FILE WITH 100 READS.
+## As a result, differential expression will probably fail.
+sample       a0.0       rna            NA         a00.fq.gz
+sample       a0.1       rna            NA         a01.fq.gz
+sample       a0.2       rna            NA         a02.fq.gz
+sample       a0.3       rna            NA         a03.fq.gz
+sample       a0.4       rna            NA         a04.fq.gz
+sample       a0.5       rna            NA         a05.fq.gz
+sample       a0.6       rna            NA         a06.fq.gz
+sample       a0.7       rna            NA         a07.fq.gz
+sample       a0.8       rna            NA         a08.fq.gz
+sample       a0.9       rna            NA         a09.fq.gz
+sample       a1.0       rna            NA         a10.fq.gz
+sample       a1.1       rna            NA         a11.fq.gz
+sample       a1.2       rna            NA         a12.fq.gz
+sample       a1.3       rna            NA         a13.fq.gz
+sample       a1.4       rna            NA         a14.fq.gz
+sample       a1.5       rna            NA         a15.fq.gz
+sample       a1.6       rna            NA         a16.fq.gz
+sample       a1.7       rna            NA         a17.fq.gz
+sample       a1.8       rna            NA         a18.fq.gz
+sample       a1.9       rna            NA         a19.fq.gz
+sample       a2.0       rna            NA         a20.fq.gz
+sample       a2.1       rna            NA         a21.fq.gz
+sample       a2.2       rna            NA         a22.fq.gz
+sample       a2.3       rna            NA         a23.fq.gz
+sample       a2.4       rna            NA         a24.fq.gz
+sample       a2.5       rna            NA         a25.fq.gz
+sample       a2.6       rna            NA         a26.fq.gz
+sample       a2.7       rna            NA         a27.fq.gz
+sample       a2.8       rna            NA         a28.fq.gz
+sample       a2.9       rna            NA         a29.fq.gz
+sample       a3.0       rna            NA         a30.fq.gz
+sample       a3.1       rna            NA         a31.fq.gz
+sample       a3.2       rna            NA         a32.fq.gz
+sample       a3.3       rna            NA         a33.fq.gz
+sample       a3.4       rna            NA         a34.fq.gz
+sample       a3.5       rna            NA         a35.fq.gz
+sample       a3.6       rna            NA         a36.fq.gz
+sample       a3.7       rna            NA         a37.fq.gz
+sample       a3.8       rna            NA         a38.fq.gz
+sample       a3.9       rna            NA         a39.fq.gz
+sample       a4.0       rna            NA         a40.fq.gz
+sample       a4.1       rna            NA         a41.fq.gz
+sample       a4.2       rna            NA         a42.fq.gz
+sample       a4.3       rna            NA         a43.fq.gz
+sample       a4.4       rna            NA         a44.fq.gz
+sample       a4.5       rna            NA         a45.fq.gz
+sample       a4.6       rna            NA         a46.fq.gz
+sample       a4.7       rna            NA         a47.fq.gz
+sample       a4.8       rna            NA         a48.fq.gz
+sample       a4.9       rna            NA         a49.fq.gz
+sample       a5.0       rna            NA         a50.fq.gz
+sample       a5.1       rna            NA         a51.fq.gz
+sample       a5.2       rna            NA         a52.fq.gz
+sample       a5.3       rna            NA         a53.fq.gz
+sample       a5.4       rna            NA         a54.fq.gz
+sample       a5.5       rna            NA         a55.fq.gz
+sample       a5.6       rna            NA         a56.fq.gz
+sample       a5.7       rna            NA         a57.fq.gz
+sample       a5.8       rna            NA         a58.fq.gz
+sample       a5.9       rna            NA         a59.fq.gz
+sample       a6.0       rna            NA         a60.fq.gz
+sample       a6.1       rna            NA         a61.fq.gz
+sample       a6.2       rna            NA         a62.fq.gz
+sample       a6.3       rna            NA         a63.fq.gz
+sample       a6.4       rna            NA         a64.fq.gz
+sample       a6.5       rna            NA         a65.fq.gz
+sample       a6.6       rna            NA         a66.fq.gz
+sample       a6.7       rna            NA         a67.fq.gz
+sample       a6.8       rna            NA         a68.fq.gz
+sample       a6.9       rna            NA         a69.fq.gz
+sample       a7.0       rna            NA         a70.fq.gz
+sample       a7.1       rna            NA         a71.fq.gz
+sample       a7.2       rna            NA         a72.fq.gz
+sample       a7.3       rna            NA         a73.fq.gz
+sample       a7.4       rna            NA         a74.fq.gz
+sample       a7.5       rna            NA         a75.fq.gz
+sample       a7.6       rna            NA         a76.fq.gz
+sample       a7.7       rna            NA         a77.fq.gz
+sample       a7.8       rna            NA         a78.fq.gz
+sample       a7.9       rna            NA         a79.fq.gz
+sample       a8.0       rna            NA         a80.fq.gz
+sample       a8.1       rna            NA         a81.fq.gz
+sample       a8.2       rna            NA         a82.fq.gz
+sample       a8.3       rna            NA         a83.fq.gz
+sample       a8.4       rna            NA         a84.fq.gz
+sample       a8.5       rna            NA         a85.fq.gz
+sample       a8.6       rna            NA         a86.fq.gz
+sample       a8.7       rna            NA         a87.fq.gz
+sample       a8.8       rna            NA         a88.fq.gz
+sample       a8.9       rna            NA         a89.fq.gz
+sample       a9.0       rna            NA         a90.fq.gz
+sample       a9.1       rna            NA         a91.fq.gz
+sample       a9.2       rna            NA         a92.fq.gz
+sample       a9.3       rna            NA         a93.fq.gz
+sample       a9.4       rna            NA         a94.fq.gz
+sample       a9.5       rna            NA         a95.fq.gz
+sample       a9.6       rna            NA         a96.fq.gz
+sample       a9.7       rna            NA         a97.fq.gz
+sample       a9.8       rna            NA         a98.fq.gz
+sample       a9.9       rna            NA         a99.fq.gz
+
+# set aligner (bowtie|tophat)
+aligner   bowtie
+minMapQ   30
+
+libraryAdapterFile = /data/applications/monkey/poo/x.defaultAdapters.txt
+bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/mm9_NCBI37_Ensembl.bed     # Note that "bedAnnotForRSEQC = NA" is also a valid way of specifying to NOT run RSEQC. This is generally not recommended.
+genomeFasta        = /data/info/genome/mm9_ensembl_igenome_with_chr/mm9.chr.fa
+repeatMask         = /data/applications/monkey/poo/mm9_repeatMask.bed
+
+# file definitions
+bowtie2Index     = /data/info/bowtie_indexes/mm9
+gtfFile          = /data/info/annotation/mouse/ANCIENT_mm9/mm9.NCBIM37.67.chrnames_fixed.gtf
+genomicBins      = /data/applications/monkey/poo/mm9_genomicBins.bed
+genomicBinsID    = /data/applications/monkey/poo/mm9_genomicBinsID.bed
+chromSizesFile   = /data/applications/monkey/poo/mm9_chrom.sizes
+geneWindows      = /data/applications/monkey/poo/mm9_ucsc_geneWindows.bed
+exonFile         = /data/applications/monkey/poo/mm9_ucsc_exons.bed
+transcriptFile   = /data/applications/monkey/poo/mm9_ucsc_transcripts.bed
+symbolXref       = /data/applications/monkey/poo/mm9_symbolXref.txt
+
+monkeyPoo        = /data/work/Code/alexgw/monkey_agw/bin   # the sub-scripts that we run are in the 'monkeyPoo' directory.
+
+# Set these options to "TRUE" only if you want to ENTIRELY OMIT that feature.
+skipQC             = FALSE   # (Default: FALSE) Whether or not to skip the QC steps
+skipWindows        = FALSE   # (Default: FALSE) Set to FALSE for ChIP-seq, or if you care about peaks!
+skipTagsAndDensity = FALSE   # (Default: FALSE) Set to FALSE for ChIP-seq, or if you care about peaks!
+
+shouldFilterAdapters = TRUE  # Should we remove adapters from the input FASTQ files? (Default: TRUE)
+browserBins          = TRUE   # Generate Sean's "binned" UCSC-style browser tracks. (Default: FALSE)
+browserWigs          = TRUE    # Generate Alex's "wiggle" UCSC_style browser tracks. (Default: FALSE)
+
+forceRerun         = FALSE   # (Default: FALSE) "forceRerun = TRUE" causes even COMPLETED tasks
+                             #                  to be re-run (including filtering & alignment!).
+
+
+tracksURL          = https://gb.ucsf.edu/bio/browser/
+                       # This is the actual (root) URL for the browser tracks.
+                       # You may want to set it to some subdirectory like https://....../browser/your_name_here/
+
+tracksRsync        = /data/gbwww/browser/
+                       # For copying on the SAME server: this is just the destination dir, e.g. /data/gbwww/browser/ but NOT the project-specific directory.
+                       # So it could be this           --> server:/somewhere/browsertracks/
+                       # but it should **NOT** be this --> server:/somewhere/browsertracks/thisProjectID/  <-- WRONG
+                       # Should be the *destination* of the rsync command... possibly WITH the server and your username!
+                       #     For example, it could be:   yourname@other.server.com://data/root/browsertracks/yourname/
+                       #     Note that you MUST set up 'passphraseless SSH' for this to work properly, since monkey can't type your password.
+

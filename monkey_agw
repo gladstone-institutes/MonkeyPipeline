@@ -1,0 +1,189 @@
+#!/usr/bin/perl
+# Sean Thomas and Alex WIlliams 2013-2016
+# version 2 - parallelized for Rigel / works with TORQUE PBS scheudler (should work with other PBS schedulers). Can operate without a scheduler if you add "--notorque" to the command line.
+
+
+# To do:
+#     * Finish the "test_monkey.pl" unit testing script (in test_config right now), which will verify that our changes don't screw up the workflow.
+#     * Allow "NA" to be specified for input fastq files that have already been aligned, thus starting directly from the BAMs.
+#     * Move old "X.logs" directories when the script is re-run, so each run has its own "X.logs" file. Makes debugging easier.
+
+use strict; use warnings; use Carp; # backtrace on errors with "confess"
+use File::Basename;
+use Data::Dumper;
+use Getopt::Long;
+use Cwd 'abs_path';
+use lib dirname( abs_path $0);
+my $MONKEY_BASEDIR; BEGIN { $MONKEY_BASEDIR = "/data/work/Code/alexgw/monkey_agw"; } #$MONKEY_BASEDIR = (defined($ENV{'MONKEY_BASEDIR'})) ? $ENV{'MONKEY_BASEDIR'} : "/data/work/Code/alexgw/monkey_agw";
+use lib qw(/data/applications/libperl/lib/perl5/);
+use lib "$MONKEY_BASEDIR"; # To make sure we find bananas_agw
+use bananas_agw; # Looks for it in $MONKEY_BASEDIR
+
+my $DATA_HEREDOC; my $INSTALL_HEREDOC; # Set at the bottom of this file
+sub initHeredocs(); initHeredocs(); # <-- Do not move this! Function prototype, also CALLED right here! Actually defined below.
+
+sub printUsageAndExit() { print STDOUT $DATA_HEREDOC; exit(1); }
+sub printInstallCommandsAndExit() { print STDOUT $INSTALL_HEREDOC; exit(1); }
+
+sub showInstallationCommands() { bananas_agw::printInstallInstructions(); exit(0); }
+
+my $studyDesignFilename = undef; # <-- important that this be 'undef' before GetOptions is called
+
+$Getopt::Long::passthrough = 1; # <--  get options and pass unprocessed ones through to @ARGV.
+GetOptions("help|?|man"                         => sub { printUsageAndExit(); }
+	   , "install"                          => sub { showInstallationCommands(); } # shows the commands required to install monkey on a fresh system
+	   , "f|force!"                         => \$bananas_agw::FORCE_RERUN
+	   , "v|verbose!"                       => \$bananas_agw::GLOBAL_VERBOSE  # <-- verbose messages
+	   , "debug!"                           => \$bananas_agw::GLOBAL_DEBUG    # <-- ultra-verbose messages
+	   , "dev|devel!"                       => \$bananas_agw::GLOBAL_DEV_MODE # <-- runs the "under testing" scripts in /dev_bin instead of the ones in /bin
+	   , "c|color!"                         => \$bananas_agw::GLOBAL_COLOR    # <-- colorize output text
+	   , "config=s"                         => \$studyDesignFilename          # If this is not specified, then it's assumed that the study design file is the LAST argument to monkey.
+	   , "dry|dryrun|dry-run|dry_run!"      => \$bananas_agw::GLOBAL_DRY_RUN # <-- don't ACTUALLY run, only print what WOULD be run
+	   , "no-scheduler|no-sch|nosch|no-pbs|nopbs|notorque|no-torque"  => \$bananas_agw::RUN_DIRECTLY_WITHOUT_TORQUE # Run without torque. Can be VERY slow, no parallelization---runs everything sequentially
+	   , "test1|test-bowtie"             => sub { $studyDesignFilename = "$MONKEY_BASEDIR/test_suite/test_01_hg19_bowtie.txt";                $bananas_agw::OUTPUT_DIR_OVERRIDE = `pwd`; } #print("RUNNING TEST CASE '$MONKEY_TEST_1_RUN_BOWTIE'...\n"); exit(system($MONKEY_TEST_1_RUN_BOWTIE)); }
+	   , "test1b"                        => sub { $studyDesignFilename = "$MONKEY_BASEDIR/test_suite/test_01_hg19_bowtie.txt";                $bananas_agw::OUTPUT_DIR_OVERRIDE = `pwd`; $bananas_agw::RUN_DIRECTLY_WITHOUT_TORQUE = 1; }
+	   , "test2|test-tophat"             => sub { $studyDesignFilename = "$MONKEY_BASEDIR/test_suite/test_02_hg19_tophat.txt";                $bananas_agw::OUTPUT_DIR_OVERRIDE = `pwd`; }
+	   , "test3|test-chip"               => sub { $studyDesignFilename = "$MONKEY_BASEDIR/test_suite/test_03_mm9_chip_exo_rna_10k_reads.txt"; $bananas_agw::OUTPUT_DIR_OVERRIDE = `pwd`; } # ChIP-seq test
+	   , "test4"                         => sub { $studyDesignFilename = "$MONKEY_BASEDIR/test_suite/test_04_mm9_chip_exo_rna_full.txt";      $bananas_agw::OUTPUT_DIR_OVERRIDE = `pwd`; } # ChIP-seq test
+	   , "test6"                         => sub { $studyDesignFilename = "$MONKEY_BASEDIR/test_suite/test_06_mm9_bowtie_many_files.txt";      $bananas_agw::OUTPUT_DIR_OVERRIDE = `pwd`; }
+	   , "test7|test-atac"               => sub { $studyDesignFilename = "$MONKEY_BASEDIR/test_suite/test_07_hg19_atac.txt";                  $bananas_agw::OUTPUT_DIR_OVERRIDE = `pwd`; }
+	   , "test8|test-bwa"                => sub { $studyDesignFilename = "$MONKEY_BASEDIR/test_suite/test_08_bwa_mm9.txt";                    $bananas_agw::OUTPUT_DIR_OVERRIDE = `pwd`; }
+	   , "test9|test-star"               => sub { $studyDesignFilename = "$MONKEY_BASEDIR/test_suite/test_09_hg19_star.txt";                  $bananas_agw::OUTPUT_DIR_OVERRIDE = `pwd`; }
+	   , "install"                       => sub { printInstallCommandsAndExit(); } # <-- doesn't work right now, but the idea is that it would print all the commands required to install the prerequisites for Monkey
+	   , "o|out=s"                       => \$bananas_agw::OUTPUT_DIR_OVERRIDE # <-- allows the 'resultDir' entry in the study design to be overridden on the command line.
+    ) or printUsageAndExit();
+
+# 0.ii identify, load and validate the study design file
+
+if (defined($studyDesignFilename)) {
+	# looks like the study design file was specified on the command line as --config=FILENAME instead of just the last argument being FILENAME
+} else {
+	my $numUnprocessedArgs = scalar(@ARGV);
+	($numUnprocessedArgs == 1) or die "\nERROR: You must specify a \"study design\" file (as the very last command line argument to the program) when running Monkey. See --help for more options.";
+	$studyDesignFilename = $ARGV[0]; # Get the last (and only) argument on the command line.
+}
+
+((-f $studyDesignFilename) && (-s $studyDesignFilename > 0)) or die "\nERROR: The specified monkey \"study design\" file \"$studyDesignFilename\" cannot be read (or is not a regular file).\nVerify that this file really exists and has non-empty contents.";
+($studyDesignFilename !~ m/[.]sh$/i) or die "\nERROR: You appear to have specified the wrong \"study design\" file on the command line---the file you specified ended in '.sh', which means it is probably the auto-generated shell script, and NOT the input monkey-format study design file, which should generally end in '.txt' or '.cfg.txt'.";
+
+#if (defined($bananas_agw::OUTPUT_DIR_OVERRIDE)) { print "Overriding output dir to: $bananas_agw::OUTPUT_DIR_OVERRIDE ..."; print "we would expect it to be this: "; print `pwd`; print "\n";}
+my $config = bananas_agw::loadConfig($studyDesignFilename);
+bananas_agw::checkConfig($config);
+bananas_agw::buildJobSubmissionList($config); # 1. build job submission script based on study design file, and generate writeup
+bananas_agw::runJobs($config); # 3. run job submission script
+#my $jobsList = $config->{jobs};
+
+if (length($bananas_agw::GLOBAL_WARNINGS) > 0) { print STDERR "\n" . '*'x80 . "\n" . $bananas_agw::GLOBAL_WARNINGS . "\n" . '*'x80 . "\n"; }
+
+sub initHeredocs() {
+	$DATA_HEREDOC = <<ENDDATA
+
+usage: monkey  [OPTIONS]  <studyDesignFile.txt>
+
+by Sean Thomas and Alex Williams, 2014-2016
+
+This program takes fastq sequence files and performs a standard set of individual and integrative analyses.
+Read the manual (a Word doc, available separately) for full details.
+
+SOFTWARE REQUIREMENTS:
+  * GENERAL:          Torque/PBS scheduler ('qsub'). Perl 5. R.
+  * TUXEDO SUITE:     bowtie2, tophat, cuffdiff, cummeRbund (R)
+  * ALIGNERS:         star, bwa
+  * R modules:        edgeR, DESeq2, ggplot2, pheatmap, cummeRbund
+                      (Install these via bioconductor.)
+  * BED:              bedtools, bedmap, bedops, bedToBigBed, bedGraphToBigWig, bam2bed, sort-bed
+  * MOTIFS:           match, match2moa, removeMoaOverlaps, peak-motifs (rsat)
+  * QUALITY CONTROL:  FastQC, RSeQC, python >= 2.7 (not 2.6)
+  * FEATURE COUNTS:   subread 'featureCounts'
+  * OUR LAB SOFTWARE: s1_getMotifRegex, s2_findLocations, convert_SAM_or_BAM_for_Genome_Browser.pl
+
+EXAMPLES:
+
+   monkey my_study_design_file.txt
+    * Output with all the settings in your sample design file. Examples of study
+      design files are available elsewhere.
+
+   monkey --out=./my_output_results   monkeyconfig.cfg.txt
+    * Output to ./my_output_results, which is hopefully a location that exists.
+      Normally not necessary--the study design file should specify the output location.
+
+   monkey -v -c  myconfig.txt
+     * Verbose, color-text output.
+
+   monkey -v --test-bowtie
+     * Tests a fake study file and generates output IN THE CURRENT DIRECTORY!
+     * Other options: --test-tophat, --test3, --test4, --test5
+     * The "--test" suites requires certain files on the filesystem. See monkey.pl code for examples.
+
+   Example study design files are in this directory on Rigel, as of 2016:
+      /data/work/Code/alexgw/monkey_agw/config_examples/
+
+   An example of the results directory given by a run of monkey, as of 2016:
+      /home/sthomas/monkeyTest/results
+
+OPTIONS:
+  --help          : Displays this help text.
+
+  --force or -f   : Forces monkey to re-run everything, even completed tasks. Default is OFF.
+
+  --dry-run or --dry : DO NOT execute commands, just run a TEST (dry) run. Default is OFF.
+
+  --dev or --devel : run scripts in 'dev_bin' intead of 'bin'. Modified the 'monkeyPoo' config variable.
+                     Use this for debugging new changes--put your test scripts into 'dev_bin' instead of bin.
+
+  --verbose or -v : Displays more verbose information. Default is QUIET.
+  --debug         : Displays even more info, most of it only useful for debugging.
+
+  --color or -c   : Terminal output is colorized. Default is monochrome.
+
+  --install       : Prints out the commands required to install Monkey's prerequisites.
+                    May not be a comprehensive list, yet.
+
+  --no-scheduler or --nosch: Run WITHOUT a scheduler--only execute one job at a time, though.
+
+If you want a script with all the commands that you WOULD be running, you can run:
+   monkey --no-scheduler --dry-run   yourconfig.cfg.txt
+   This will generate an output file with the ".sh" extension. This file will list of all the commands
+   that would normally be submitted via the scheduler. You can run these manually if you want.
+
+STUDY DESIGN FILE OVERRIDE OPTIONS (optional):
+  --out or -o = "/some/path/on/filesystem" : Use the specified directory for results
+                       instead of the 'resultDir' variable in the study design file.
+                       'resultDir' in the study design will be ignored if this is specified.
+
+YOU CAN TEST MONKEY AS FOLLOWS:
+
+  mkdir TESTBOW && cd TESTBOW && monkey --test-bowtie --verbose
+        * generates a NEW test (in the current directory) for the bowtie pipeline with sample data elsewhere on the filesystem.
+        * RNA-seq pipeline.
+  mkdir TESTTOP && cd TESTTOP && monkey --test-tophat --verbose
+        * same as above, but for Tophat. Runs the RNA-seq pipeline.
+
+--------------
+ENDDATA
+	  ; # <-- Important for ending the heredoc and allowing more commands
+
+	  $INSTALL_HEREDOC = <<ENDINSTALL;
+#####################################################################
+Here are the commands you need to run to set things up for Monkey:
+
+************ This is SUPER obsolete.*********
+
+Install TORQUE (qsub / scheduler system)
+
+sudo apt-get install R perl
+sudo apt-get install samtools bedtools
+sudo apt-get install tophat bowtie2 cufflinks
+
+R:
+
+sudo R
+# Now from within R:
+source('http://bioconductor.org/biocLite.R')
+biocLite(pkgs=c("DESeq2","edgeR","limma","hopach","cummeRbund"), dependencies=TRUE)
+install.packages(c("ggplot2","pheatmap","gplots","data.table","gapmap","genefilter"), dependencies=TRUE)
+#####################################################################
+
+ENDINSTALL
+	; # <-- Important for ending the heredoc and potentially allowing more commands
+}

@@ -1,0 +1,53 @@
+studyName = monkeytest_04_chipExonRnaTestFULL
+sampleDir = /data/projects/monkey-test-data/2014-tbx5-test/
+# Above:  Previously: /home/sthomas/monkeyTest/samplesFull
+resultDir = THIS_IS_SET_AUTOMATICALLY_BY_THE_TEST_SCRIPT
+species  = mm9
+aligner  = bowtie
+minMapQ  = 30
+version   = 1.1 # Config file verison. Optional, but lets us auto-detect certain obsolete config file aspects.
+
+# <sample>    <ID.rep#>       <chip|rna|exo>   <inputName>      <fileName(s)>
+sample        EXO_Tbx5_CM.1     exo            NA               Tbx5_exo_CM.fastq.gz
+sample        RNA_Brg_d10.1     rna            NA               Brg1_mm9_rep1_D10_bc5_L1_pair1.fq.gz   Brg1_mm9_rep1_D10_bc5_L1_pair2.fq.gz
+sample        CHIP_Tbx5_CM.1    chip           CHIP_Input_CM.1  Tbx5_CM_WT_A.fastq.gz
+input         CHIP_Input_CM.1   chip           NA               Input_CM_WT_A.fastq.gz
+
+# ===================================================================================================
+monkeyPoo            = /data/work/Code/alexgw/monkey_agw/bin  # All sub-scripts that we run are here
+doQC                 = TRUE   # (Default: FALSE) should we run the quality control steps?
+doWindows            = TRUE   # (Def: FALSE) Set to TRUE for ChIP-seq, or if you care about peaks!
+doDensity            = TRUE   # (Def: FALSE) Set to TRUE for ChIP-seq, or if you care about peaks!
+shouldFilterAdapters = TRUE   # (Def: TRUE) Filter out the adapters from the input FASTQ files?
+doAltAnalyze         = FALSE   # (Def: TRUE) Run the 'lineage profiler'. Only runs for mouse & human.
+browserBins          = TRUE   # (Def: FALSE) Generate Sean's "binned" UCSC browser tracks.
+browserWigs          = TRUE   # (Def: FALSE) Generate Alex's "wiggle" UCSC browser tracks.
+forceRerun           = FALSE  # (Def: FALSE) Should be FALSE. TRUE forces EVERYTHING to be rerun, and is usually a bad idea.
+# ==================== SET SAMPLES HERE. SEE BELOW FOR EXAMPLES ================================================
+
+# ==================== DONE SETTING SAMPLES =========================================================
+# ===================================================================================================
+# Below: BROWSER TRACK DETAILS -- DO NOT MODIFY unless you really, really have an unusual project.
+tracksShowEveryRead = FALSE    # If TRUE, saves HUGE bam files in the browser dir.
+tracksURL           = https://gb.ucsf.edu/bio/browser/  # <-- DO NOT MODIFY! A subdirectory with the 'studyName'
+                                                        #     from above will AUTOMATICALLY be made in this parent dir.
+tracksRsync         = /data/gbwww/browser/              # <-- DO NOT MODIFY THIS unless you really know what you're doing!
+# ===================================================================================================
+
+libraryAdapterFile = /data/work/Code/alexgw/monkey_agw/support/adapter_seq_to_trim.fasta
+
+[mm9      ]bwaIndex           = /data/info/genome/mm9_ensembl_igenome_with_chr/bwa.mm9.chr
+[mm9      ]bowtie2Index       = /data/info/genome/mm9_ensembl_igenome_with_chr/mm9.chr
+[mm9      ]gtfFile            = /data/info/genome/mm9_ensembl_igenome_with_chr/mm9.chr.gtf
+[mm9      ]genomeFasta        = /data/info/genome/mm9_ensembl_igenome_with_chr/mm9.chr.fa
+[mm9      ]genomeFastaDir     = /data/info/genome/mm9_ensembl_igenome_with_chr/mm9.chr_chromosome_fastas/
+[mm9      ]starIndexDir       = /data/info/genome/mm9_ensembl_igenome_with_chr/STAR_index_mm9.chr
+[mm9      ]bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/mm9_NCBI37_Ensembl.bed
+
+[mm9    ]chromSizesFile   = /data/applications/monkey/poo/mm9_chrom.sizes
+[mm9    ]genomicBins      = /data/applications/monkey/poo/mm9_genomicBins.bed
+[mm9    ]genomicBinsID    = /data/applications/monkey/poo/mm9_genomicBinsID.bed
+[mm9    ]geneWindows      = /data/applications/monkey/poo/mm9_ucsc_geneWindows.bed
+[mm9    ]symbolXref       = /data/applications/monkey/poo/mm9_symbolXref.txt
+[mm9    ]repeatMask       = /data/applications/monkey/poo/mm9_repeatMask.bed
+

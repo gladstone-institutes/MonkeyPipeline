@@ -1,0 +1,116 @@
+studyName = monkeytest_01_bowtie
+species   = hg19   #  Genome Assembly in question. Can be anything, but needs to *MATCH* the text in brackets below (example: hg19, mm9, galGal4, yourNewGenomeX, danRer7)
+sampleDir = /data/work/Code/alexgw/monkey_agw/test_suite/test_rnaseq_hg19_1000_reads
+resultDir = /data/work/Code/alexgw/monkey_agw/test_suite/tmp.test_rnaseq_hg19_OUTPUT_FILES_TMP_DELETE_US_PLEASE_bowtie.tmp
+# (Note: in an actual test, the resultDir above is not used---it is overridden by the "--out" parameter on the command line.)
+
+# Here are the possible 'analysis_type' options:
+#       chip: ChIP-seq
+#       atac: ATAC-seq
+#        rna: RNA-seq
+#      other: Anything else that is similar to ChIP-seq but not actually ChIP-seq
+
+#<sample>      <ID.rep#>      <analysis_type>      <inputName>      <fileName>
+sample         ctrl.1         rna                      NA           test1.fq.gz
+sample         exp.1          rna                      NA           test2.fq.gz
+sample         other.1        rna                      NA           test3.fq.gz
+
+# set aligner (bowtie|tophat)
+aligner            = bowtie
+minMapQ            = 30
+
+monkeyPoo            = /data/work/Code/alexgw/monkey_agw/bin
+
+# Set these options to "TRUE" only if you want to ENTIRELY OMIT that feature.
+doQC               = TRUE   # (Default: FALSE) Whether or not to skip the QC steps
+doWindows          = TRUE   # (Default: FALSE) Set to FALSE for ChIP-seq, or if you care about peaks!
+doDensity          = TRUE   # (Default: FALSE) Set to FALSE for ChIP-seq, or if you care about peaks!
+
+shouldFilterAdapters = TRUE  # Should we remove adapters from the input FASTQ files? (Default: TRUE)
+browserBins          = FALSE # Generate Sean's "binned" UCSC-style browser tracks. (Default: FALSE)
+browserWigs          = TRUE  # Generate Alex's "wiggle" UCSC_style browser tracks. (Default: FALSE)
+
+forceRerun          = FALSE   # (Default: FALSE) "forceRerun = TRUE" causes even COMPLETED tasks
+                             #                  to be re-run (including filtering & alignment!).
+
+tracksURL          = https://gb.ucsf.edu/bio/browser/
+                       # This is the actual (root) URL for the browser tracks.
+                       # You may want to set it to some subdirectory like https://....../browser/your_name_here/
+
+tracksRsync        = /data/gbwww/browser/
+                       # For copying on the SAME server: this is just the destination dir, e.g. /data/gbwww/browser/ but NOT the project-specific directory.
+                       # So it could be this           --> server:/somewhere/browsertracks/
+                       # but it should **NOT** be this --> server:/somewhere/browsertracks/thisProjectID/  <-- WRONG
+                       # Should be the *destination* of the rsync command... possibly WITH the server and your username!
+                       #     For example, it could be:   yourname@other.server.com://data/root/browsertracks/yourname/
+                       #     Note that you MUST set up 'passphraseless SSH' for this to work properly, since monkey can't type your password.
+
+# ============== BELOW: Files for each genome assembly. Feel free to make your own new one! =========
+[hg19]bowtie2Index       = /data/info/genome/hg19_ensembl_igenome_with_chr/hg19.chr
+[hg19]starIndexDir       = /data/info/genome/hg19_ensembl_igenome_with_chr/STAR_index_hg19.chr
+[hg19]bwaIndex           = NA
+[hg19]gtfFile            = /data/info/genome/hg19_ensembl_igenome_with_chr/hg19.chr.gtf   # Note that "gtfFile = NA" is also a valid way of specifying to NOT use a GTF file. This is generally not recommended.
+[hg19]genomeFasta        = /data/info/genome/hg19_ensembl_igenome_with_chr/hg19.chr.fa
+[hg19]genomeFastaDir     = /data/info/genome/hg19_ensembl_igenome_with_chr/hg19_per_chr_fasta_dir
+[hg19]bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/hg19_Ensembl.bed             # Note that "bedAnnotForRSEQC = NA" is also a valid way of specifying to NOT run RSEQC.
+
+[mm9 ]bowtie2Index       = /data/info/genome/mm9_ensembl_igenome_with_chr/mm9.chr
+[mm9 ]starIndexDir       = /data/info/genome/mm9_ensembl_igenome_with_chr/STAR_index_mm9.chr
+[mm9 ]bwaIndex           = NA
+[mm9 ]gtfFile            = /data/info/genome/mm9_ensembl_igenome_with_chr/mm9.chr.gtf   # Note that "gtfFile = NA" is also a valid way of specifying to NOT use a GTF file. This is generally not recommended.
+[mm9 ]genomeFasta        = /data/info/genome/mm9_ensembl_igenome_with_chr/mm9.chr.fa
+[mm9 ]genomeFastaDir     = /data/info/genome/mm9_ensembl_igenome_with_chr/mm9_per_chr_fasta_dir   # Can be "NA" if you are not doing chip-seq.
+[mm9 ]bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/mm9_NCBI37_Ensembl.bed     # Note that "bedAnnotForRSEQC = NA" is also a valid way of specifying to NOT run RSEQC. This is generally not recommended.
+
+[mm10]bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/mm10_Ensembl80.bed
+
+[galGal4]bowtie2Index       = /data/info/genome/galGal4_ensembl_igenome_ucsc/galGal4_ucsc
+[galGal4]starIndex          = NA
+[galGal4]bwaIndex           = NA
+[galGal4]gtfFile            = /data/info/genome/galGal4_ensembl_igenome_ucsc/galGal4_ucsc.gtf   # Note that "gtfFile = NA" is also a valid way of specifying to NOT use a GTF file. This is generally not recommended.
+[galGal4]genomeFasta        = /data/info/genome/galGal4_ensembl_igenome_ucsc/galGal4_ucsc.fa
+[galGal4]genomeFastaDir     = /data/info/genome/galGal4_ensembl_igenome_ucsc/galGal4_ucsc_chromosome_fastas/
+[galGal4]bedAnnotForRSEQC   = NA   # Note that "bedAnnotForRSEQC = NA" is also a valid way of specifying to NOT run RSEQC. This is generally not recommended.
+
+[danRer7]bowtie2Index       = /data/info/genome/danRer7_ensembl_igenome_ucsc/danRer7_ucsc
+[danRer7]starIndex          = NA
+[danRer7]bwaIndex           = NA
+[danRer7]gtfFile            = /data/info/genome/danRer7_ensembl_igenome_ucsc/danRer7_ucsc.gtf   # Note that "gtfFile = NA" is also a valid way of specifying to NOT use a GTF file. This is generally not recommended.
+[danRer7]genomeFasta        = /data/info/genome/danRer7_ensembl_igenome_ucsc/danRer7_ucsc.fa
+[danRer7]genomeFastaDir     = /data/info/genome/danRer7_ensembl_igenome_ucsc/danRer7_ucsc_chromosome_fastas/
+[danRer7]bedAnnotForRSEQC   = NA   # Note that "bedAnnotForRSEQC = NA" is also a valid way of specifying to NOT run RSEQC.
+
+# libraryAdapterFile is universal to all species, so it doesn't have a [species] prefix here.
+libraryAdapterFile       = /data/work/Code/alexgw/monkey_agw/support/adapter_seq_to_trim.fasta
+
+# Other example indexes for multiple species:
+#     * ERCC 92 spike-ins: /data/info/genome/ercc/ERCC92  (this is the index name, not the filename)
+#     * Various ribosomes: /data/info/genome/ribosome/ribo  (this is the index name, not the filename)
+
+# ==================================================================================================
+# Below: required for browser bins!
+[hg19   ]chromSizesFile   = /data/applications/monkey/poo/hg19_chrom.sizes
+[hg19   ]genomicBins      = /data/applications/monkey/poo/hg19_genomicBins.bed
+[hg19   ]genomicBinsID    = /data/applications/monkey/poo/hg19_genomicBinsID.bed
+[hg19   ]geneWindows      = /data/applications/monkey/poo/hg19_ucsc_geneWindows.bed
+[hg19   ]exonFile         = /data/applications/monkey/poo/hg19_ucsc_exons.bed
+[hg19   ]transcriptFile   = /data/applications/monkey/poo/hg19_ucsc_transcripts.bed
+[hg19   ]symbolXref       = /data/applications/monkey/poo/hg19_symbolXref.txt
+[hg19   ]repeatMask       = /data/applications/monkey/poo/hg19_repeatMask.bed
+[mm9    ]chromSizesFile   = /data/applications/monkey/poo/mm9_chrom.sizes
+[mm9    ]genomicBins      = /data/applications/monkey/poo/mm9_genomicBins.bed
+[mm9    ]genomicBinsID    = /data/applications/monkey/poo/mm9_genomicBinsID.bed
+[mm9    ]geneWindows      = /data/applications/monkey/poo/mm9_ucsc_geneWindows.bed
+[mm9    ]exonFile         = /data/applications/monkey/poo/mm9_ucsc_exons.bed
+[mm9    ]transcriptFile   = /data/applications/monkey/poo/mm9_ucsc_transcripts.bed
+[mm9    ]symbolXref       = /data/applications/monkey/poo/mm9_symbolXref.txt
+[mm9    ]repeatMask       = /data/applications/monkey/poo/mm9_repeatMask.bed
+[danRer7]chromSizesFile   = /data/applications/monkey/poo/danRer7_chrom.sizes
+[danRer7]genomicBins      = /data/applications/monkey/poo/danRer7_genomicBins.bed
+[danRer7]genomicBinsID    = /data/applications/monkey/poo/danRer7_genomicBinsID.bed
+[danRer7]geneWindows      = /data/applications/monkey/poo/danRer7_ensembl_geneWindows.bed
+[danRer7]exonFile         = /data/applications/monkey/poo/danRer7_ensembl_exons.bed
+[danRer7]transcriptFile   = /data/applications/monkey/poo/danRer7_ensembl_transcripts.bed
+[danRer7]symbolXref       = /data/applications/monkey/poo/danRer7_symbolXref.txt
+[danRer7]repeatMask       = /data/applications/monkey/poo/danRer7_repeatMask.bed
+

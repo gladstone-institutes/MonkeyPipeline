@@ -1,0 +1,61 @@
+studyName    = monkeytest_03_chipExonRna_10k_reads
+sampleDir    = /data/work/Code/alexgw/monkey_agw/test_suite/test_mm9_chip_exo_rna_10k_reads
+resultDir    = THIS_IS_SET_AUTOMATICALLY_BY_THE_TEST_SCRIPT
+species      = mm9
+
+# pathFile   = /data/work/Code/alexgw/monkey_agw/config_examples/config_example.cfg.txt
+
+# <sample>   <ID.rep#>   <chip|rna|exo>   <inputName>   <fileName(s)>
+sample       Tbx_exo.1           exo              NA             Tbx5_exo_CM.fastq.gz
+sample       Brg_RNA.1           rna              NA             Brg1_mm9_rep1_D10_bc5_L1_pair1.fq.gz     Brg1_mm9_rep1_D10_bc5_L1_pair2.fq.gz
+sample       Tbx_chip.1          chip             Input_chip.1   Tbx5_CM_WT_A.fastq.gz
+input        Input_chip.1        chip             NA             Input_CM_WT_A.fastq.gz
+
+# set aligner (bowtie|tophat)
+aligner   bowtie
+minMapQ   30
+
+libraryAdapterFile = /data/work/Code/alexgw/monkey_agw/support/adapter_seq_to_trim.fasta
+bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/mm9_NCBI37_Ensembl.bed     # Note that "bedAnnotForRSEQC = NA" is also a valid way of specifying to NOT run RSEQC. This is generally not recommended.
+genomeFasta        = /data/info/genome/mm9_ensembl_igenome_with_chr/mm9.chr.fa
+repeatMask         = /data/applications/monkey/poo/mm9_repeatMask.bed
+genomeFastaDir     = /data/info/genome/mm9_ensembl_igenome_with_chr/mm9_per_chr_fasta_dir   # Can be "NA" if you are not doing chip-seq.
+
+
+# file definitions
+bowtie2Index     = /data/info/bowtie_indexes/mm9
+gtfFile          = /data/info/annotation/mouse/ANCIENT_mm9/mm9.NCBIM37.67.chrnames_fixed.gtf
+genomicBins      = /data/applications/monkey/poo/mm9_genomicBins.bed
+genomicBinsID    = /data/applications/monkey/poo/mm9_genomicBinsID.bed
+chromSizesFile   = /data/applications/monkey/poo/mm9_chrom.sizes
+geneWindows      = /data/applications/monkey/poo/mm9_ucsc_geneWindows.bed
+exonFile         = /data/applications/monkey/poo/mm9_ucsc_exons.bed
+transcriptFile   = /data/applications/monkey/poo/mm9_ucsc_transcripts.bed
+symbolXref       = /data/applications/monkey/poo/mm9_symbolXref.txt
+
+monkeyPoo        = /data/work/Code/alexgw/monkey_agw/bin   # the sub-scripts that we run are in the 'monkeyPoo' directory.
+
+# Set these options to "TRUE" only if you want to ENTIRELY OMIT that feature.
+skipQC             = FALSE   # (Default: FALSE) Whether or not to skip the QC steps
+skipWindows        = FALSE   # (Default: FALSE) Set to FALSE for ChIP-seq, or if you care about peaks!
+skipTagsAndDensity = FALSE   # (Default: FALSE) Set to FALSE for ChIP-seq, or if you care about peaks!
+
+shouldFilterAdapters = TRUE  # Should we remove adapters from the input FASTQ files? (Default: TRUE)
+browserBins          = TRUE   # Generate Sean's "binned" UCSC-style browser tracks. (Default: FALSE)
+browserWigs          = TRUE    # Generate Alex's "wiggle" UCSC_style browser tracks. (Default: FALSE)
+
+forceRerun         = FALSE   # (Default: FALSE) "forceRerun = TRUE" causes even COMPLETED tasks
+                             #                  to be re-run (including filtering & alignment!).
+
+tracksURL          = https://gb.ucsf.edu/bio/browser/
+                       # This is the actual (root) URL for the browser tracks.
+                       # You may want to set it to some subdirectory like https://....../browser/your_name_here/
+
+tracksRsync        = /data/gbwww/browser/
+                       # For copying on the SAME server: this is just the destination dir, e.g. /data/gbwww/browser/ but NOT the project-specific directory.
+                       # So it could be this           --> server:/somewhere/browsertracks/
+                       # but it should **NOT** be this --> server:/somewhere/browsertracks/thisProjectID/  <-- WRONG
+                       # Should be the *destination* of the rsync command... possibly WITH the server and your username!
+                       #     For example, it could be:   yourname@other.server.com://data/root/browsertracks/yourname/
+                       #     Note that you MUST set up 'passphraseless SSH' for this to work properly, since monkey can't type your password.
+

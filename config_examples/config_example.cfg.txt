@@ -1,0 +1,205 @@
+# Note: the most up-to-date example version of this file is on the Rigel filesystem in the directory:
+#    /data/work/Code/alexgw/monkey_agw/config_examples/
+
+studyName = yourStudy123                       # <-- Short, UNIQUE project name. No spaces / weird characters.
+sampleDir = /fullPathToFASTQInputFiles/        # <-- (FULL PATH starting with a /) of your input FASTQ files.
+resultDir = /fullPathToProjectOutDirectory/    # <-- (FULL PATH starting with a /) This will be created.
+species   = __________SPECIESHERE
+aligner   = star   #  Set the aligner (options: bowtie, bwa, tophat, star)
+minMapQ   = PICK FROM THE LIST BELOW!! Do not just naively use 30 for everything!
+version   = 1.1 # Config file verison. Optional, but lets us auto-detect certain obsolete config file aspects.
+
+# About each aligner:
+#        bowtie: DNA-only alignment. Use for CHIPSEQ.
+#        star  : RNA + DNA. Super fast. Use it for RNASEQ.
+#        tophat: RNA + DNA. Obsolete, only use it if you have < 30 GB RAM on your computer.
+#        bwa   : DNA-only (CHIP) alignment., most-sensitive for gaps
+
+# About 'minMapQ': Generally, we recommend 30 for BOWTIE/TOPHAT and 3 for STAR.
+#        STAR doesnt actually have a mapping quality score for the reads, theirs is setup like this:
+#              255 = unique, 3 = read maps to 2+, 2 = read maps to 3+, 1 = read maps to 4-9, 0 = read maps to 10+
+#        minMapQ_star     = 3      #  Minimum map quality (MAPQ) for reads to NOT be filtered out. For STAR
+#        minMapQ_tophat   = 30     #  Minimum map quality (MAPQ) for reads to NOT be filtered out.
+#        minMapQ_bowtie   = 30     #  Minimum map quality (MAPQ) for reads to NOT be filtered out.
+#        minMapQ_bwa      = 0     #  Minimum map quality (MAPQ) for reads to NOT be filtered out.
+# ===================================================================================================
+monkeyPoo            = /data/work/Code/alexgw/monkey_agw/bin  # All sub-scripts that we run are here
+doQC                 = TRUE   # (Default: FALSE) should we run the quality control steps?
+doWindows            = TRUE   # (Def: FALSE) Set to TRUE for ChIP-seq, or if you care about peaks!
+doDensity            = TRUE   # (Def: FALSE) Set to TRUE for ChIP-seq, or if you care about peaks!
+shouldFilterAdapters = TRUE   # (Def: TRUE) Filter out the adapters from the input FASTQ files?
+doAltAnalyze         = TRUE   # (Def: TRUE) Run the 'lineage profiler'. Only runs for mouse & human.
+browserBins          = TRUE   # (Def: FALSE) Generate Sean's "binned" UCSC browser tracks.
+browserWigs          = TRUE   # (Def: FALSE) Generate Alex's "wiggle" UCSC browser tracks.
+forceRerun           = FALSE  # (Def: FALSE) Should be FALSE. TRUE forces EVERYTHING to be rerun, and is usually a bad idea.
+# ==================== SET SAMPLES HERE. SEE BELOW FOR EXAMPLES ================================================
+#sample      GROUPNAME.REPL    ASSAY       INPUT_if_any    FILENAME_FWD_STRAND       FILENAME_REV_STRAND
+sample       Tbx5_CM_exo.1     exo         NA              Tbx5_exo_CM.fastq.gz
+sample       Brg_d10_RNA.1     rna         NA              Brg1_mm9_R1.fq.gz         Brg1_mm9_R2.fq.gz
+input        Input_CM.1        chip        NA              Input_CM_WT_A.fastq.bz2
+sample       Tbx5_CM_chip.1    chip        Input_CM.1      Tbx5_CM_WT_A.fastq.gz
+
+# Note: when listing groups, the group that comes LAST is always the 'most baseline' one that comparisons are
+#       in reference to for diff. expression. So if you put WT or CTRL at the end, that would probably make the most sense.
+
+# Note: the literal text 'sample' should appear at the beginning of any sample EXCEPT...
+#       ...for ChIP-seq 'input' files, which have the literal text 'input' (no quotation marks)
+# Description of possible sample options above: the possible 'analysis_type' options:
+#       'chip': ChIP-seq (recommended aligners: bowtie / bwa)
+#       'atac': ATAC-seq (recommended aligners: bowtie / bwa)
+#        'exo': EXO-seq
+#        'rna': RNA-seq (recommended aligners: tophat / star)
+#      'other': Anything else that is similar to ChIP-seq but not actually ChIP-seq (also requires "aligner = bowtie")
+
+# Also: note that for RNASeq, the "sample" field starts with the literal text "sample" (NOT a sample name)
+#       ChIP-seq may have "input" fields that are not "samples"---each "input" should correspond to one sample.
+# Replicate number can be any UNIQUE number, or ".id<WHATEVER>". Examples: WT.1  CTRL.2492 TREAT.id1 TREAT.id_XYZ MY.id_whatever
+# ==================== DONE SETTING SAMPLES =========================================================
+# ===================================================================================================
+# Below: BROWSER TRACK DETAILS -- DO NOT MODIFY unless you really, really have an unusual project.
+tracksShowEveryRead = FALSE    # If TRUE, saves HUGE bam files in the browser dir.
+tracksURL           = https://gb.ucsf.edu/bio/browser/  # <-- DO NOT MODIFY! A subdirectory with the 'studyName'
+                                                        #     from above will AUTOMATICALLY be made in this parent dir.
+tracksRsync         = /data/gbwww/browser/              # <-- DO NOT MODIFY THIS unless you really know what you're doing!
+                     # Example to ANOTHER server --> server:/somewhere/browsertracks/
+                     #                 but NOT:  --> server:/somewhere/browsertracks/thisProjectID/ <-- WRONG!!
+                     # If there is no "servername:", then rsync assumes we're copying on the same server.
+                     # Example 2: it could be:   yourname@other.server.com://data/root/browsertracks/yourname/
+                     # Note: you MUST set up 'passphraseless SSH' for remote servers--monkey can't type your password.
+# ===================================================================================================
+# ============== BELOW: Files for each genome assembly. Feel free to make your own new one! =========
+# ============== NOTE: You should generally not need to edit these, if you set your <species> at ====
+# ==============       the top of this file.                                                     ====
+
+# About setting these files to NA:
+#         * gtfFile:           You can set "gtfFile = NA" if you don't have a GTF file,
+#                              but it's not recommended. However, programs will still work.
+#                                  * This means you will NOT get gene-level counts though
+#                                    (no subread / edgeR steps).
+#         * bedAnnotForRSEQC:  You can set "bedAnnotForRSEQC = NA" if you don't have RSEQC's
+#                              BED format files, or if you just don't want to run RSEQC.
+#         * If you aren't using STAR / bowtie / BWA, it's OK if their indexes are "NA"
+#         * bowtie2Index and bwaIndex: These are PREFIXES of the actual filenames.
+#                      * bowtie2Index must **NOT** have '.1.bt2' at the end
+#                      * bwaIndex must **NOT** have '.bwa' at the end
+#         * starIndexDir: set to the directory with the STAR indexes. Trailing slash is unimportant.
+[hg19     ]bwaIndex           = /data/info/genome/hg19_ensembl_igenome_with_chr/bwa.hg19.chr
+[hg19     ]bowtie2Index       = /data/info/genome/hg19_ensembl_igenome_with_chr/hg19.chr
+[hg19     ]gtfFile            = /data/info/genome/hg19_ensembl_igenome_with_chr/hg19.chr.gtf
+[hg19     ]genomeFasta        = /data/info/genome/hg19_ensembl_igenome_with_chr/hg19.chr.fa
+[hg19     ]genomeFastaDir     = /data/info/genome/hg19_ensembl_igenome_with_chr/hg19_per_chr_fasta_dir
+[hg19     ]starIndexDir       = /data/info/genome/hg19_ensembl_igenome_with_chr/STAR_index_hg19.chr
+[hg19     ]bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/hg19_Ensembl.bed
+
+# hg19 PLUS ERCC92 spike-in controls
+[hg19_ERCC]bwaIndex           = /data/info/genome/hg19_ensembl_igenome_with_chr_and_ercc/bwa.hg19.chr_and_ERCC92
+[hg19_ERCC]bowtie2Index       = /data/info/genome/hg19_ensembl_igenome_with_chr_and_ercc/hg19.chr_and_ERCC92
+[hg19_ERCC]gtfFile            = /data/info/genome/hg19_ensembl_igenome_with_chr_and_ercc/hg19.chr_and_ERCC92.gtf
+[hg19_ERCC]genomeFasta        = /data/info/genome/hg19_ensembl_igenome_with_chr_and_ercc/hg19.chr_and_ERCC92.fa
+[hg19_ERCC]genomeFastaDir     = NA
+[hg19_ERCC]starIndexDir       = /data/info/genome/hg19_ensembl_igenome_with_chr_and_ercc/STAR_index_hg19.chr_and_ERCC92
+[hg19_ERCC]bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/hg19_Ensembl.bed
+
+# [hg38     ]bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/??????
+
+[mm9      ]bwaIndex           = /data/info/genome/mm9_ensembl_igenome_with_chr/bwa.mm9.chr
+[mm9      ]bowtie2Index       = /data/info/genome/mm9_ensembl_igenome_with_chr/mm9.chr
+[mm9      ]gtfFile            = /data/info/genome/mm9_ensembl_igenome_with_chr/mm9.chr.gtf
+[mm9      ]genomeFasta        = /data/info/genome/mm9_ensembl_igenome_with_chr/mm9.chr.fa
+[mm9      ]genomeFastaDir     = /data/info/genome/mm9_ensembl_igenome_with_chr/mm9.chr_chromosome_fastas/
+[mm9      ]starIndexDir       = /data/info/genome/mm9_ensembl_igenome_with_chr/STAR_index_mm9.chr
+[mm9      ]bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/mm9_NCBI37_Ensembl.bed
+
+[mm10     ]bwaIndex           = /data/info/genome/mm10_ensembl_igenome_with_chr/bwa.mm10.chr
+[mm10     ]bowtie2Index       = /data/info/genome/mm10_ensembl_igenome_with_chr/mm10.chr
+[mm10     ]gtfFile            = /data/info/genome/mm10_ensembl_igenome_with_chr/mm10.chr.gtf
+[mm10     ]genomeFasta        = /data/info/genome/mm10_ensembl_igenome_with_chr/mm10.chr.fa
+[mm10     ]genomeFastaDir     = /data/info/genome/mm10_ensembl_igenome_with_chr/mm10.chr_chromosome_fastas/
+[mm10     ]starIndexDir       = /data/info/genome/mm10_ensembl_igenome_with_chr/STAR_index_mm10.chr
+[mm10     ]bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/mm10_Ensembl80.bed
+
+[rn6      ]bwaIndex           = /data/info/genome/rn6_ensembl_igenome_with_chr/bwa.rn6.chr
+[rn6      ]bowtie2Index       = /data/info/genome/rn6_ensembl_igenome_with_chr/rn6.chr
+[rn6      ]gtfFile            = /data/info/genome/rn6_ensembl_igenome_with_chr/rn6.chr.gtf
+[rn6      ]genomeFasta        = /data/info/genome/rn6_ensembl_igenome_with_chr/rn6.chr.fa
+[rn6      ]genomeFastaDir     = /data/info/genome/rn6_ensembl_igenome_with_chr/rn6.chr_chromosome_fastas/
+[rn6      ]starIndexDir       = /data/info/genome/rn6_ensembl_igenome_with_chr/STAR_index_rn6.chr
+[rn6      ]bedAnnotForRSEQC   = NA
+
+[galGal4  ]bowtie2Index       = /data/info/genome/galGal4_ensembl_igenome_ucsc/galGal4_ucsc      # galGal = chicken
+[galGal4  ]gtfFile            = /data/info/genome/galGal4_ensembl_igenome_ucsc/galGal4_ucsc.gtf
+[galGal4  ]genomeFasta        = /data/info/genome/galGal4_ensembl_igenome_ucsc/galGal4_ucsc.fa
+[galGal4  ]genomeFastaDir     = /data/info/genome/galGal4_ensembl_igenome_ucsc/galGal4_ucsc_chromosome_fastas/
+[galGal4  ]starIndexDir       = NA
+[galGal4  ]bedAnnotForRSEQC   = NA
+[galGal4  ]bwaIndex           = NA
+
+[danRer7  ]bowtie2Index       = /data/info/genome/danRer7_ensembl_igenome_ucsc/danRer7_ucsc   # danio rerio = zebrafish
+[danRer7  ]gtfFile            = /data/info/genome/danRer7_ensembl_igenome_ucsc/danRer7_ucsc.gtf
+[danRer7  ]genomeFasta        = /data/info/genome/danRer7_ensembl_igenome_ucsc/danRer7_ucsc.fa
+[danRer7  ]genomeFastaDir     = /data/info/genome/danRer7_ensembl_igenome_ucsc/danRer7_ucsc_chromosome_fastas/
+[danRer7  ]starIndexDir       = NA
+[danRer7  ]bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/danRer7_Ensembl.bed
+[danRer7  ]bwaIndex           = NA
+
+[  dm3    ]bowtie2Index       = /data/info/genome/drosophila_dm3_BDGP5_ensembl_igenome_with_chr/dm3_ucsc  # dm3 = drosophila
+[  dm3    ]gtfFile            = /data/info/genome/drosophila_dm3_BDGP5_ensembl_igenome_with_chr/dm3_ucsc.gtf
+[  dm3    ]genomeFasta        = /data/info/genome/drosophila_dm3_BDGP5_ensembl_igenome_with_chr/dm3_ucsc.fa
+[  dm3    ]genomeFastaDir     = /data/info/genome/drosophila_dm3_BDGP5_ensembl_igenome_with_chr/dm3_ucsc_chromosome_fastas/
+[  dm3    ]starIndexDir       = /data/info/genome/drosophila_dm3_BDGP5_ensembl_igenome_with_chr/STAR_index_dm3_ucsc/
+[  dm3    ]bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/dm3_Ensembl.bed
+[  dm3    ]bwaIndex           = NA
+
+# libraryAdapterFile is universal to all species, so it doesn't have a [species] prefix here.
+libraryAdapterFile          = /data/work/Code/alexgw/monkey_agw/support/adapter_seq_to_trim.fasta
+
+# Other example indexes for multiple species:
+#     * ERCC 92 spike-ins: /data/info/genome/ercc/ERCC92  (this is the index name, not the filename)
+#     * Various ribosomes: /data/info/genome/ribosome/ribo  (this is the index name, not the filename)
+
+# ==================================================================================================
+# Below: required for non-RNAseq analyses
+[hg38   ]chromSizesFile   = /data/applications/monkey/poo/hg38_chrom.sizes
+
+[hg19   ]chromSizesFile   = /data/applications/monkey/poo/hg19_chrom.sizes
+[hg19   ]genomicBins      = /data/applications/monkey/poo/hg19_genomicBins.bed
+[hg19   ]genomicBinsID    = /data/applications/monkey/poo/hg19_genomicBinsID.bed
+[hg19   ]geneWindows      = /data/applications/monkey/poo/hg19_ucsc_geneWindows.bed
+[hg19   ]symbolXref       = /data/applications/monkey/poo/hg19_symbolXref.txt
+[hg19   ]repeatMask       = /data/applications/monkey/poo/hg19_repeatMask.bed
+# [hg19_ERCC] still does not have these either
+
+[mm9    ]chromSizesFile   = /data/applications/monkey/poo/mm9_chrom.sizes
+[mm9    ]genomicBins      = /data/applications/monkey/poo/mm9_genomicBins.bed
+[mm9    ]genomicBinsID    = /data/applications/monkey/poo/mm9_genomicBinsID.bed
+[mm9    ]geneWindows      = /data/applications/monkey/poo/mm9_ucsc_geneWindows.bed
+[mm9    ]symbolXref       = /data/applications/monkey/poo/mm9_symbolXref.txt
+[mm9    ]repeatMask       = /data/applications/monkey/poo/mm9_repeatMask.bed
+[mm10   ]chromSizesFile   = /data/applications/monkey/poo/mm10_chrom.sizes
+[mm10   ]genomicBins      = /data/applications/monkey/poo/mm10_genomicBins.bed
+[mm10   ]genomicBinsID    = /data/applications/monkey/poo/mm10_genomicBinsID.bed
+[mm10   ]geneWindows      = /data/applications/monkey/poo/mm10_ensemblGeneWindows.bed
+[mm10   ]symbolXref       = /data/applications/monkey/poo/mm10_symbolXref.txt
+[mm10   ]repeatMask       = /data/applications/monkey/poo/mm10_repeatMask.bed
+
+[rn6    ]chromSizesFile   = /data/info/genome/rn6_ensembl_igenome_with_chr/rn6.chr.chrom.sizes.txt
+#[rn6    ]genomicBins      = **NONE**
+#[rn6    ]genomicBinsID    = **NONE**
+#[rn6    ]geneWindows      = **NONE**
+#[rn6    ]symbolXref       = **NONE**
+#[rn6    ]repeatMask       = **NONE**
+
+# [ galGal4 ] needs these still
+
+[danRer7]chromSizesFile   = /data/applications/monkey/poo/danRer7_chrom.sizes
+[danRer7]genomicBins      = /data/applications/monkey/poo/danRer7_genomicBins.bed
+[danRer7]genomicBinsID    = /data/applications/monkey/poo/danRer7_genomicBinsID.bed
+# [danRer7]geneWindows    = ???????????????
+[danRer7]symbolXref       = /data/applications/monkey/poo/danRer7_symbolXref.txt
+[danRer7]repeatMask       = /data/applications/monkey/poo/danRer7_repeatMask.bed
+[  dm3  ]chromSizesFile   = /data/applications/monkey/poo/dm3_chrom.sizes
+[  dm3  ]genomicBins      = /data/applications/monkey/poo/dm3_genomicBins.bed
+[  dm3  ]genomicBinsID    = /data/applications/monkey/poo/dm3_genomicBinsID.bed
+[  dm3  ]geneWindows      = /data/applications/monkey/poo/dm3_geneWindows.bed
+[  dm3  ]symbolXref       = /data/applications/monkey/poo/dm3_symbolXref.txt
+[  dm3  ]repeatMask       = /data/applications/monkey/poo/dm3_repeatMask.bed

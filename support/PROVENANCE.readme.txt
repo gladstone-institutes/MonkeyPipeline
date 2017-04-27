@@ -1,0 +1,1 @@
+adapter_seq_from_FASTQC_ORIGINAL.README

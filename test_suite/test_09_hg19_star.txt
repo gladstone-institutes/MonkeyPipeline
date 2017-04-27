@@ -1,0 +1,46 @@
+studyName = monkeytest_09_star
+sampleDir = /data/work/Code/alexgw/monkey_agw/test_suite/test_rnaseq_hg19_1000_reads
+resultDir = /data/work/Code/alexgw/monkey_agw/test_suite/tmp.test_rnaseq_hg19_OUTPUT_FILES_TMP_DELETE_US_PLEASE_tophat.tmp
+# (Note: in an actual test, the resultDir above is not used---it is overridden by the "--out" parameter on the command line.)
+
+#<sample>   <ID.rep#>   <chip|rna|exo>   <inputName>   <fileName>
+sample      hg19ctrl.1       rna               NA          test1.fq.gz
+sample      hg19exp.1        rna               NA          test2.fq.gz
+sample      hg19other.1      rna               NA          test3.fq.gz
+
+aligner              = star
+minMapQ              = 0
+
+bowtie2Index       = /data/info/genome/hg19_ensembl_igenome_with_chr/hg19.chr    # <-- New: for the STAR aligner
+bwaIndex           = NA
+starIndexDir       = /data/info/genome/hg19_ensembl_igenome_with_chr/STAR_index_hg19.chr
+gtfFile            = /data/info/genome/hg19_ensembl_igenome_with_chr/hg19.chr.gtf
+genomeFasta        = /data/info/genome/hg19_ensembl_igenome_with_chr/hg19.chr.fa
+genomeFastaDir     = /data/info/genome/hg19_ensembl_igenome_with_chr/hg19_per_chr_fasta_dir/
+bedAnnotForRSEQC   = NA
+libraryAdapterFile = /data/applications/monkey/poo/x.defaultAdapters.txt
+
+# ==================================================================================================
+monkeyPoo            = /data/work/Code/alexgw/monkey_agw/bin  # All sub-scripts that we run are here
+skipQC               = FALSE   # (Default: FALSE) Whether or not to skip the QC steps
+skipWindows          = TRUE    # (Default: FALSE) Set to FALSE for ChIP-seq, or if you care about peaks!
+skipTagsAndDensity   = TRUE    # (Default: FALSE) Set to FALSE for ChIP-seq, or if you care about peaks!
+
+shouldFilterAdapters = FALSE   # Should we filter out the adapter seqs from the input FASTQ files? (Default: TRUE)
+browserBins          = FALSE   # Generate Sean's "binned" UCSC-style browser tracks. (Default: FALSE)
+browserWigs          = TRUE    # Generate Alex's "wiggle" UCSC_style browser tracks. (Default: FALSE)
+
+forceRerun           = FALSE   # (Default: FALSE) "forceRerun = TRUE" causes even COMPLETED tasks
+                               #                  to be re-run (including filtering & alignment!).
+# ==================================================================================================
+# Below: BROWSER TRACK DETAILS -- DO NOT MODIFY unless you really, really have an unusual project.
+tracksShowEveryRead = FALSE    # If you set to true, it will save HUGE bam files in the browser directory as well. Default: FALSE.
+tracksURL           = https://gb.ucsf.edu/bio/browser/  # <-- DO NOT MODIFY THIS! A subdirectory with the 'studyName' from above will be AUTOMATICALLY created in this parent directory.
+tracksRsync         = /data/gbwww/browser/              # <-- DO NOT MODIFY THIS unless you really know what you're doing!
+                     # Valid example of this to ANOTHER server --> server:/somewhere/browsertracks/
+                     # but it should **NOT** be this --> server:/somewhere/browsertracks/thisProjectID/  <-- WRONG
+                     # If there is no "servername:", then rsync assumes that we're just copying on the same server.
+                     # Should be the *destination* of the rsync command... possibly WITH the server and your username!
+                     #   For example, it could be:   yourname@other.server.com://data/root/browsertracks/yourname/
+                     #   Note that you MUST set up 'passphraseless SSH' for this to work properly, since monkey can't type your password.
+# ==================================================================================================

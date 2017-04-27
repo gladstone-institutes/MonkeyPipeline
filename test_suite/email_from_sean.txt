@@ -1,0 +1,14 @@
+
+Here is the test study design file:
+
+/home/sthomas/monkeyTest/testDesign_mm9.txt
+
+Which looks for the following samples:
+/home/sthomas/monkeyTest/samplesFull/
+
+And you can compare the results to these:
+/home/sthomas/monkeyTest/resultsFull/
+
+Let me know when re done developing and testing, as there are a bunch of improvements to the ChIP analyses that ve been wanting to make!
+Sean
+

@@ -1,0 +1,56 @@
+studyName = monkeytest_02_tophat
+sampleDir = /data/work/Code/alexgw/monkey_agw/test_suite/test_rnaseq_hg19_1000_reads
+resultDir = /data/work/Code/alexgw/monkey_agw/test_suite/tmp.test_rnaseq_hg19_OUTPUT_FILES_TMP_DELETE_US_PLEASE_tophat.tmp
+# (Note: in an actual test, the resultDir above is not used---it is overridden by the "--out" parameter on the command line.)
+
+#<sample>   <ID.rep#>   <chip|rna|exo>   <inputName>   <fileName>
+sample      ctrl.1       rna               NA          test1.fq.gz
+sample      exp.1        rna               NA          test2.fq.gz
+sample      other.1      rna               NA          test3.fq.gz
+
+# set aligner (bowtie|tophat)
+aligner              = tophat
+minMapQ              = 30
+
+libraryAdapterFile = /data/applications/monkey/poo/x.defaultAdapters.txt
+bowtie2Index       = /data/info/genome/hg19_ensembl_igenome_with_chr/hg19.chr
+gtfFile            = /data/info/genome/hg19_ensembl_igenome_with_chr/hg19.chr.gtf
+bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/hg19_Ensembl.bed
+genomeFasta        = /data/info/genome/hg19_ensembl_igenome_with_chr/hg19.chr.fa
+
+# All the sub-scripts that are run are in the 'monkeyPoo' directory.
+monkeyPoo            = /data/work/Code/alexgw/monkey_agw/bin
+
+# file definitions
+genomicBins          = /data/applications/monkey/poo/hg19_genomicBins.bed
+genomicBinsID        = /data/applications/monkey/poo/hg19_genomicBinsID.bed
+chromSizesFile       = /data/applications/monkey/poo/hg19_chrom.sizes
+geneWindows          = /data/applications/monkey/poo/hg19_ucsc_geneWindows.bed
+exonFile             = /data/applications/monkey/poo/hg19_ucsc_exons.bed
+transcriptFile       = /data/applications/monkey/poo/hg19_ucsc_transcripts.bed
+symbolXref           = /data/applications/monkey/poo/hg19_symbolXref.txt
+
+# Set these options to "TRUE" only if you want to ENTIRELY OMIT that feature.
+skipQC             = FALSE   # (Default: FALSE) Whether or not to skip the QC steps
+skipWindows        = TRUE    # (Default: FALSE) Set to FALSE for ChIP-seq, or if you care about peaks!
+skipTagsAndDensity = TRUE    # (Default: FALSE) Set to FALSE for ChIP-seq, or if you care about peaks!
+
+shouldFilterAdapters = TRUE  # Should we remove adapters from the input FASTQ files? (Default: TRUE)
+browserBins          = FALSE # Generate Sean's "binned" UCSC-style browser tracks. (Default: FALSE)
+browserWigs          = TRUE  # Generate Alex's "wiggle" UCSC_style browser tracks. (Default: FALSE)
+
+forceRerun         = FALSE   # (Default: FALSE) "forceRerun = TRUE" causes even COMPLETED tasks
+                             #                  to be re-run (including filtering & alignment!).
+
+tracksURL          = https://gb.ucsf.edu/bio/browser/
+                       # This is the actual (root) URL for the browser tracks.
+                       # You may want to set it to some subdirectory like https://....../browser/your_name_here/
+
+tracksRsync        = /data/gbwww/browser/
+                       # For copying on the SAME server: this is just the destination dir, e.g. /data/gbwww/browser/ but NOT the project-specific directory.
+                       # So it could be this           --> server:/somewhere/browsertracks/
+                       # but it should **NOT** be this --> server:/somewhere/browsertracks/thisProjectID/  <-- WRONG
+                       # Should be the *destination* of the rsync command... possibly WITH the server and your username!
+                       #     For example, it could be:   yourname@other.server.com://data/root/browsertracks/yourname/
+                       #     Note that you MUST set up 'passphraseless SSH' for this to work properly, since monkey can't type your password.
+
