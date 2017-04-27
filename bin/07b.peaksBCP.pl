@@ -13,7 +13,7 @@ use lib "/data/work/Code/alexgw/monkey_agw"; use bananas_agw; # To make sure we 
 use Cwd;
 
 # check for correct qsub variables needed to perform density calculations
-bananas_agw::requireEnvOrDie('sampleName','genome','seqType','bcp','expTagsBed','ctlTagsBed','peaksDir'); # <-- these vars MUST be defined in the %ENV hash
+bananas_agw::requireEnvOrDie('sampleName','genome','seqType','bcp','expTagsBed','ctlTagsBed','peaksDir', 'chromSizes'); # <-- these vars MUST be defined in the %ENV hash
 
 my $force = bananas_agw::envLooksTrue("force"); my $verbose = bananas_agw::envLooksTrue("verbose"); my $debug = bananas_agw::envLooksTrue("debug");
 
@@ -21,6 +21,11 @@ my $qVal   = 0.001;  # sets the q-value threshold
 my $k      = $ENV{'sampleName'};
 my $genome = $ENV{'genome'};
 my $bcp    = $ENV{'bcp'};
+
+# REUBEN ADD START
+my $chromSizes = $ENV{'chromSizes'};
+bananas_agw::dieIfFileAccessFails($chromSizes);
+# REUBEN ADD END
 
 # make sure write directories exists or make them
 ((-d $ENV{'peaksDir'}) or mkdir($ENV{'peaksDir'})) or confess "unable to find or create results directory: $ENV{'peaksDir'}!";
@@ -30,6 +35,10 @@ my $bcp    = $ENV{'bcp'};
 
 chdir("$ENV{'peaksDir'}");
 
+# REUBEN ADD START
+my $outPeakTempFile = catfile($ENV{'peaksDir'},"${k}_${genome}_Temp_bcpPeaks.bed");
+my $chromSizesBedFile = catfile($ENV{'peaksDir'},"ChromSizes.bed");
+# REUBEN ADD END
 my $outPeakFile = catfile($ENV{'peaksDir'},"${k}_${genome}_bcpPeaks.bed");
 my $opTmp  = $outPeakFile . ".tmp";
 my $opLog  = $outPeakFile . ".log";
@@ -40,8 +49,12 @@ if ($force or ! -e $outPeakFile) {
 	bananas_agw::systemAndLog("awk \'{print \$1\"\\t\"\$2\"\\t\"\$3\"\\t\"\$4\"\t1\t\"\$5}\' $ENV{'expTagsBed'} > $expTmp", $verbose, $syslog);
 	bananas_agw::systemAndLog("awk \'{print \$1\"\\t\"\$2\"\\t\"\$3\"\\t\"\$4\"\t1\t\"\$5}\' $ENV{'ctlTagsBed'} > $ctlTmp", $verbose, $syslog);
 	bananas_agw::systemAndLog("$bcp -1 $expTmp -2 $ctlTmp -f 200 -w 200 -p $qVal -3 $opTmp &> $opLog", $verbose, $syslog);
-	bananas_agw::systemAndLog("sort-bed $opTmp > $outPeakFile", $verbose, $syslog);
-	bananas_agw::systemAndLog("/bin/rm $opTmp $opLog $ctlTmp $expTmp", $verbose, $syslog);
+# REUBEN ADD START
+	bananas_agw::systemAndLog("sort-bed $opTmp > $outPeakTempFile", $verbose, $syslog);
+        bananas_agw::systemAndLog("awk \'{print \$1\"\t1\t\"\$2}\' $chromSizes > $chromSizesBedFile", $verbose, $syslog);
+        bananas_agw::systemAndLog("bedops --intersect $outPeakTempFile $chromSizesBedFile  > $outPeakFile", $verbose, $syslog);
+	bananas_agw::systemAndLog("/bin/rm $opTmp $opLog $ctlTmp $expTmp $outPeakTempFile, $chromSizesBedFile", $verbose, $syslog);
+# REUBEN ADD END
 }
 
 # If you run java -jar gem.jar with no arguments, you get these options:
