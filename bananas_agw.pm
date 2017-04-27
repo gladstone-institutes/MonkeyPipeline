@@ -1394,6 +1394,7 @@ sub buildJobSubmissionList {
 				$vars->{seqType}     = $cfg->{details}->{$k}->{type};
 				$vars->{sampleName}  = $k;
 				$vars->{peaksDir}    = $cfg->{bcpPeakResultsDir};
+                                $vars->{chromSizes}  = $cfg->{chromSizesFile};
 				$vars->{expTagsBed} = catfile($cfg->{'tagResultsDir'}, ("${k}_${genomeAbbrev}_tags.bed"));
 				$vars->{ctlTagsBed} = catfile($cfg->{'tagResultsDir'}, ("${matchingInputName}_${genomeAbbrev}_tags.bed"));
 				setJobInfo($cfg, $STEP_BCP_PEAKS, "${k}", $dep,$vars,$cfg->{monkeyPoo},"07b.peaksBCP.pl");
