@@ -157,6 +157,7 @@ if ($type eq "exo") {
 if ($SHOULD_RUN_GEM) {
 	my $gpbb      = catfile($aDir, "${k}_${genome}_gemPeaks.bb");
         my $gpfile = bananas_agw::catRequiredFile($ENV{'gemPeaksDir'}, "${k}_${genome}_gemPeaks.bed");
+        if(-e $gpfile) {
         my $back=`wc -l $gpfile`;
         my @array1=split ' ', $back;
         my $nl=$array1[0];
@@ -169,6 +170,7 @@ if ($SHOULD_RUN_GEM) {
 	
 	        bananas_agw::dieIfFileAccessFails($gpbb);
 	        appendToBrowserFile(createPeakBigBedLine("gem", $k, $ENV{'studyName'}, $gpbb, $ENV{'url'}) );
+        }
         }
 }
 
