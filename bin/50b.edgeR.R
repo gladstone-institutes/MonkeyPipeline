@@ -421,13 +421,15 @@ for (i in seq_along(interest.list)) {
      yyy <- edgeR::DGEList(counts=dfilt.counts.mat, group=thegroup)
 
      yyy <- edgeR::calcNormFactors(yyy)        # "normalizes for RNA composition by finding a set of scaling factors for the lib sizes that minimize the log-fold changes between the samples for most genes."
-     yyy <- edgeR::estimateGLMCommonDisp(yyy)  # Estimate COMMON dispersion. May be redunant when Trended is used.
-     yyy <- edgeR::estimateGLMTrendedDisp(yyy) # <-- apparently this makes the COMMON and TAG-WISE disperson obsolete? In other words, you can just run this (and not estimateGLMCommonDisp or estimateGLMTagwiseDisp, and you get the same P-values, as far as I can tell)
-     yyy <- rescue_us_if_there_are_no_replicates(yyy) # Has to come right AFTER estimateGLMTrendedDisp
-     yyy <- edgeR::estimateGLMTagwiseDisp(yyy) # Estimate TAG-WISE dispersion. May be redundant with Trended
-
-     #yyy <- edgeR::estimateDisp(yyy, design=design) # <-- this fails to handle the N = 1 case with NO REPLICATES
-     
+    if(dim(design)[1] <  4) {
+     	yyy <- edgeR::estimateGLMCommonDisp(yyy)  # Estimate COMMON dispersion. May be redunant when Trended is used.
+     	yyy <- edgeR::estimateGLMTrendedDisp(yyy) # <-- apparently this makes the COMMON and TAG-WISE disperson obsolete? In other words, you can just run this (and not estimateGLMCommonDisp or estimateGLMTagwiseDisp, and you get the same P-values, as far as I can tell)
+     	yyy <- rescue_us_if_there_are_no_replicates(yyy) # Has to come right AFTER estimateGLMTrendedDisp
+     	yyy <- edgeR::estimateGLMTagwiseDisp(yyy) # Estimate TAG-WISE dispersion. May be redundant with Trended
+     }
+     if(dim(design)[1] >=  4) {
+      yyy <- edgeR::estimateDisp(yyy, design=design) # <-- this fails to handle the N = 1 case with NO REPLICATES
+     }
      fit   <- edgeR::glmFit(yyy, design)
      lrt   <- edgeR::glmLRT(glmfit=fit, coef=ncol(fit$design), contrast=contr)
      # Note: only one comparison at a time!!
