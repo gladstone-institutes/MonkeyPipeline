@@ -156,15 +156,22 @@ if ($type eq "exo") {
 # add GEM peak output if necessary
 if ($SHOULD_RUN_GEM) {
 	my $gpbb      = catfile($aDir, "${k}_${genome}_gemPeaks.bb");
-	if (needToGenerate($gpbb)) {
-		my $gpfile = bananas_agw::catRequiredFile($ENV{'gemPeaksDir'}, "${k}_${genome}_gemPeaks.bed");
+        my $gpfile = bananas_agw::catRequiredFile($ENV{'gemPeaksDir'}, "${k}_${genome}_gemPeaks.bed");
+        if(-e $gpfile) {
+        my $back=`wc -l $gpfile`;
+        my @array1=split ' ', $back;
+        my $nl=$array1[0];
+	if (needToGenerate($gpbb) && $nl > 0) {
+		# my $gpfile = bananas_agw::catRequiredFile($ENV{'gemPeaksDir'}, "${k}_${genome}_gemPeaks.bed");
 		my $TMP    = $gpfile . ".tmp";
 		bananas_agw::systemAndLogDieNonzero("cut -f 1-4 $gpfile > $TMP", $verbose);
 		bananas_agw::systemAndLog("$bedToBigBed $TMP $chromSizes $gpbb     > /dev/null 2>&1", $verbose);
 		unlink($TMP);
-	}
-	bananas_agw::dieIfFileAccessFails($gpbb);
-	appendToBrowserFile(createPeakBigBedLine("gem", $k, $ENV{'studyName'}, $gpbb, $ENV{'url'}) );
+	
+	        bananas_agw::dieIfFileAccessFails($gpbb);
+	        appendToBrowserFile(createPeakBigBedLine("gem", $k, $ENV{'studyName'}, $gpbb, $ENV{'url'}) );
+        }
+        }
 }
 
 # add BCP peak output if necessary
