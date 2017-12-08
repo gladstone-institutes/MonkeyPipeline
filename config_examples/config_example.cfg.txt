@@ -100,7 +100,14 @@ tracksRsync         = /data/gbwww/browser/              # <-- DO NOT MODIFY THIS
 [hg19_ERCC]starIndexDir       = /data/info/genome/hg19_ensembl_igenome_with_chr_and_ercc/STAR_index_hg19.chr_and_ERCC92
 [hg19_ERCC]bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/hg19_Ensembl.bed
 
-# [hg38     ]bedAnnotForRSEQC   = /data/info/genome/rseqc_bed_files/??????
+# Added August 2017
+[hg38     ]bowtie2Index       = /data/info/genome/hg38_ncbi_igenome/hg38.chr
+[hg38     ]gtfFile            = /data/info/genome/hg38_ncbi_igenome/hg38.chr.gtf
+[hg38     ]genomeFasta        = /data/info/genome/hg38_ncbi_igenome/hg38.chr.fa
+[hg38     ]genomeFastaDir     = /data/info/genome/hg38_ncbi_igenome/hg38_per_chr_fasta_dir
+[hg38     ]bwaIndex           = /data/info/genome/hg38_ncbi_igenome/bwa.hg38.chr
+[hg38     ]starIndexDir       = /data/info/genome/hg38_ncbi_igenome/STAR_index_hg38.chr
+[hg38     ]bedAnnotForRSEQC   = NA # not available as of August 2017
 
 [mm9      ]bwaIndex           = /data/info/genome/mm9_ensembl_igenome_with_chr/bwa.mm9.chr
 [mm9      ]bowtie2Index       = /data/info/genome/mm9_ensembl_igenome_with_chr/mm9.chr
@@ -168,6 +175,7 @@ libraryAdapterFile          = /data/work/Code/alexgw/monkey_agw/support/adapter_
 [hg19   ]symbolXref       = /data/applications/monkey/poo/hg19_symbolXref.txt
 [hg19   ]repeatMask       = /data/applications/monkey/poo/hg19_repeatMask.bed
 # [hg19_ERCC] still does not have these either
+
 
 [mm9    ]chromSizesFile   = /data/applications/monkey/poo/mm9_chrom.sizes
 [mm9    ]genomicBins      = /data/applications/monkey/poo/mm9_genomicBins.bed
