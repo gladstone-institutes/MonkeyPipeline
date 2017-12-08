@@ -13,7 +13,7 @@ Sean Thomas and Alex WIlliams 2013-2016
     - Push feature branches to a counterpart branch in remote/origin (i.e. GitHub) with the same name.
     - When done implementing fix or feature open a Pull Request (PR) to merge the changes into `master`.
     - Ideally have someone else review your code and approve those changes, i.e. approve the PR.
-    - **feature branch naming convention:** *initials*-feature-branch-names, e.g. df-add_new_feature.
+    - **feature branch naming convention:** *initials*-feature-branch-name, e.g. df-add_new_feature.
 - Generally use `git pull --rebase` when pulling changes (say from `master`) from GitHub, and `git merge` when pushing changes up the hierarchy/GitHub. See these:  
     - https://www.derekgourlay.com/blog/git-when-to-merge-vs-when-to-rebase/  
     - https://www.atlassian.com/git/tutorials/merging-vs-rebasing
