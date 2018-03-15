@@ -18,3 +18,7 @@ Sean Thomas and Alex WIlliams 2013-2016
     - https://www.derekgourlay.com/blog/git-when-to-merge-vs-when-to-rebase/  
     - https://www.atlassian.com/git/tutorials/merging-vs-rebasing
 - **TYPICAL ORDER OF STEPS** (when you have local changes and you want to come up-to-date with remote)**:** `commit` local changes, `pull` from remote, `push` to remote.
+
+### USAGE:
+usage: monkey  [OPTIONS]  <studyDesignFile.txt>
+by Sean Thomas and Alex Williams, 2014-2016
