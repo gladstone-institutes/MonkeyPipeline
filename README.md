@@ -21,4 +21,3 @@ Sean Thomas and Alex WIlliams 2013-2016
 
 ### USAGE:
 usage: monkey  [OPTIONS]  <studyDesignFile.txt>
-by Sean Thomas and Alex Williams, 2014-2016
