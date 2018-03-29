@@ -46,7 +46,6 @@ sample       Tbx5_CM_chip.1    chip        Input_CM.1      Tbx5_CM_WT_A.fastq.gz
 #       ...for ChIP-seq 'input' files, which have the literal text 'input' (no quotation marks)
 # Description of possible sample options above: the possible 'analysis_type' options:
 #       'chip': ChIP-seq (recommended aligners: bowtie / bwa)
-#       'atac': ATAC-seq (recommended aligners: bowtie / bwa)
 #        'exo': EXO-seq
 #        'rna': RNA-seq (recommended aligners: tophat / star)
 #      'other': Anything else that is similar to ChIP-seq but not actually ChIP-seq (also requires "aligner = bowtie")
