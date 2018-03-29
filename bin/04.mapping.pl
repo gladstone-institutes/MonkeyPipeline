@@ -129,7 +129,7 @@ if ($ENV{alignerExeWithoutPath} =~ m/^(tophat|tophat2)/i) { # ~~~~~~~~ TOPHAT (a
 	my $starOutSortedBam = catfile($starOutDir, "Aligned.sortedByCoord.out.bam"); # <-- STAR has hard-coded filenames
 	bananas_agw::mkdirOrDie($starOutDir);
 	$alignerOutCode = bananas_agw::systemAndLog(qq{$ENV{alignerPath}  --runThreadN $numThreads  --genomeDir $ENV{'starIndexDir'} }
-						    . qq{ --readFilesCommand gunzip -c }
+						    . qq{ --readFilesCommand gunzip -c } # <-- incredibly, this works somehow, despite the lack of a quotation marks, and a space (gunzip -c is totally valid with no quotes)
 						    . qq{ --readFilesIn $fqFile1 $fqFile2 }
 						    . qq{ --outFileNamePrefix $starOutDir/ }
 						    . qq{ --outSAMtype BAM SortedByCoordinate } # outputs a file named "Aligned.sortedByCoord.out.bam"
