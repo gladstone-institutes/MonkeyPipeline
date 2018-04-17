@@ -20,4 +20,4 @@ Sean Thomas and Alex WIlliams 2013-2016
 - **TYPICAL ORDER OF STEPS** (when you have local changes and you want to come up-to-date with remote)**:** `commit` local changes, `pull` from remote, `push` to remote.
 
 ### USAGE:
-usage: `monkey_agw [OPTIONS] <config_file.txt>`
+usage: `monkey_agw -V [OPTIONS] <config_file.txt>`
