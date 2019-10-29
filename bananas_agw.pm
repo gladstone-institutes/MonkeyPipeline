@@ -52,19 +52,19 @@ my $NORMAL_GROUP_NAME = "normal";
 
 my %QSETTINGS = ( "dest"                  => {"$ADMIN_GROUP_NAME"   => "-q Bio"
 					     , "$NORMAL_GROUP_NAME" => "-q General" }
-		  , "grouplist"           => {"$ADMIN_GROUP_NAME"   => "-W group_list=bioqueue"
-					     , "$NORMAL_GROUP_NAME" => "-W group_list=genqueue" }
+		  , "grouplist"           => {"$ADMIN_GROUP_NAME"   => "-A bioqueue"
+					     , "$NORMAL_GROUP_NAME" => "-A genqueue" }
 		  , "ncpus_for_alignment" => {"$ADMIN_GROUP_NAME"   => "6"  # Privileged users = 4 threads per job, other users = 1 thread
 					     , "$NORMAL_GROUP_NAME" => "2" }
-		  , "tophat_needs"        => {"pbs_mem" => "12gb" }
-		  , "star_aligner_needs"  => {"pbs_mem" => "33gb" } # needs a lot of ram! Default is 31 GB limit for just the aligner
-		  , "gem"                 => {"pbs_mem" => "25gb", "pbs_ncpus"=>1 } # needs a lot of ram! Default is 31 GB limit for just the aligner
+		  , "tophat_needs"        => {"pbs_mem" => "12g" }
+		  , "star_aligner_needs"  => {"pbs_mem" => "33g" } # needs a lot of ram! Default is 31 GB limit for just the aligner
+		  , "gem"                 => {"pbs_mem" => "25g", "pbs_ncpus"=>1 } # needs a lot of ram! Default is 31 GB limit for just the aligner
 		  , "default_ncpus"       => {"$ADMIN_GROUP_NAME"    => "1"
 					      , "$NORMAL_GROUP_NAME" => "1" }
-		  , "default_mem"         => {"$ADMIN_GROUP_NAME"    => "4gb"
-					    , "$NORMAL_GROUP_NAME"   => "4gb" }
-		  , "default_walltime"    => {"$ADMIN_GROUP_NAME"    => "72:00:00"
-					     , "$NORMAL_GROUP_NAME"  => "72:00:00" }
+		  , "default_mem"         => {"$ADMIN_GROUP_NAME"    => "4g"
+					    , "$NORMAL_GROUP_NAME"   => "4g" }
+		  , "default_walltime"    => {"$ADMIN_GROUP_NAME"    => "259200"
+					     , "$NORMAL_GROUP_NAME"  => "259200" }
 		  );
 my $UNIX_GRP_WORK       = "1004"; # <== Anybody in this group gets the be 'privileged' for job submission
 my $UNIX_GRP_CAVE       = "3050"; # <== Anybody in this group gets the be 'privileged' for job submission
@@ -1090,7 +1090,7 @@ sub setJobInfo {
 
     my $scriptFullPath = catfile($theBinDir,$script);
     validateScriptOrDie($scriptFullPath, $cfg);
-    my $depStr = ($dependencies ne "") ? "-W depend=afterok:$dependencies" : ""; # Note that if $dependencies is non-blank, it will always begin with a ":"
+    my $depStr = ($dependencies ne "") ? "-hold_jid $dependencies" : ""; # Note that if $dependencies is non-blank, it will always begin with a ":"
     my $qsubCmd;
     if ($RUN_DIRECTLY_WITHOUT_TORQUE) { $qsubCmd = "${expvars}${scriptFullPath}"; } # <== note the literal backtick! There will be a matching one later. Also: the saving-to-shell-variables part is SPACE-SENSITIVE, so DO NOT add spaces here whatever you do.
     else {                              $qsubCmd = "${expvars}${jobFullName}=`" . get_qsub_cmd($cfg, $vars) . " -V -N ${jobFullName} ${depStr} ${variables} ${scriptFullPath}`"; } # <== note the literal backtick! There will be a matching one later. Also: the saving-to-shell-variables part is SPACE-SENSITIVE, so DO NOT add spaces here whatever you do.
@@ -1120,25 +1120,25 @@ sub getUserPriv { # Gets user privilege. See "QSETTINGS"
 	return $NORMAL_GROUP_NAME;
 }
 
-sub get_qsub_cmd($;$) { # returns something like: qsub -q Bio -W group_list="bioqueue" (with the appropriate groups set)
-	my ($cfg, $hr) = @_; # hr is an (optional) hash ref of arguments to qsub! Example: "{walltime=>"49:20:20", ncpus=>4}"
-	# -q General -W group_list="genqueue"
-	#    qsub -I -q Bio -W group_list="bioqueue" -l ncpus=1
-	#    qsub -q Bio     -W group_list="bioqueue" [/path/to/script]
-	# or qsub -q General -W group_list="genqueue" [/path/to/script]
+sub get_qsub_cmd($;$) { # returns something like: qsub -q Bio -A "bioqueue" (with the appropriate groups set)
+	my ($cfg, $hr) = @_; # hr is an (optional) hash ref of arguments to qsub! Example: "{h_rt=>"3600", mem_free=4g}"
+	# -q General -A "genqueue"
+	#    qsub -I -q Bio -A "bioqueue" -l scratch=5g
+	#    qsub -q Bio     -A "bioqueue" [/path/to/script]
+	# or qsub -q General -A "genqueue" [/path/to/script]
 	#if (!defined($hr)) { my %h = (); $hr = \%h; }; # just define the hash ref if it wasn't actually passed in...
 	my $qsub         = getBinPath($cfg,"qsub");
 	my $userPriv     = getUserPriv();
 	my $qdest_param  = $QSETTINGS{dest}{$userPriv};
 	my $qgroup_param = $QSETTINGS{grouplist}{$userPriv};
-	my $mem      = "-l mem="      . (defined($hr->{pbs_mem})      ? $hr->{pbs_mem}      : $QSETTINGS{default_mem}{$userPriv});
-	my $walltime = "-l walltime=" . (defined($hr->{pbs_walltime}) ? $hr->{pbs_walltime} : $QSETTINGS{default_walltime}{$userPriv});
+	my $mem      = "-l mem_free="      . (defined($hr->{pbs_mem})      ? $hr->{pbs_mem}      : $QSETTINGS{default_mem}{$userPriv});
+	my $walltime = "-l h_rt=" . (defined($hr->{sge_h_rt}) ? $hr->{sge_h_rt} : $QSETTINGS{default_h_rt}{$userPriv});
 	my $ncpus    = "-l ncpus="    . (defined($hr->{pbs_ncpus})    ? $hr->{pbs_ncpus}    : $QSETTINGS{default_ncpus}{$userPriv});
-	#my $nodes    = "-l nodes=1:ppn=1"; # <== ????????? unclear if this is useful
+	#my $nodes    = "-pe smp 1"; # <== ????????? unclear if this is useful
 	my $stderr   = ""; #"-e /dev/null"
 	my $stdout   = ""; #"-o /dev/null"
-	$mem      =~ m/^-l mem=\d+[gm]b$/                or confess "[ERROR]: 'mem' parameter needs to be a number followed by 'gb' or 'mb'! Yours is: $mem";
-	$walltime =~ m/^-l walltime=\d+:\d\d:\d\d$/ or confess "[ERROR]: 'walltime' parameter must look like this: HH:MM:SS. Yours is: $walltime";
+	$mem      =~ m/^-l mem_free=\d+[gm]$/                or confess "[ERROR]: 'mem_free' parameter needs to be a number followed by 'g' or 'm'! Yours is: $mem";
+	$walltime =~ m/^-l h_rt=\d+$/ or confess "[ERROR]: 'h_rt' parameter must be in units of seconds and look like this: 3600. Yours is: $walltime";
 	$ncpus    =~ m/^-l ncpus=[1-9][0-9]*$/                   or confess "[ERROR]: 'ncpus' parameter must be numeric integer greater than 0! Yours is: $ncpus";
 	return qq{$qsub $qdest_param $qgroup_param $mem $walltime $ncpus $stderr $stdout};
 }
