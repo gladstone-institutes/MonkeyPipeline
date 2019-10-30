@@ -1219,7 +1219,7 @@ sub buildJobSubmissionList {
 			my $pbs_mem = $QSETTINGS{$aligner_requirement_string}{pbs_mem}; # default amount of ram needed is whatever tophat wants
 			# =========================================================================================================
 			my $vars = { 'force'=>$FORCE_RERUN, 'verbose'=>$GLOBAL_VERBOSE, 'debug'=>$GLOBAL_DEBUG
-				     , 'pbs_ncpus'   => $ncpus_for_alignment, 'pbs_mem' => $pbs_mem, 'pbs_walltime'=> "299:00:04"
+				     , 'pbs_ncpus'   => $ncpus_for_alignment, 'pbs_mem' => $pbs_mem, 'pbs_walltime'=> "1076404"
 				     , 'filterDir'   => $cfg->{'filterResultsDir'}
 				     , 'mappingDir'  => $cfg->{'mappingResultsDir'}
 				     , 'alignerPath' => getBinPath($cfg, $cfg->{'aligner'})
@@ -1496,7 +1496,7 @@ sub buildJobSubmissionList {
 		my $dep                = getHashPointerOfAllBamJobs(); # hash pointer -- require ALL bam alignment jobs are DONE!
 		my $bamMultiFileString = join(" ", getArrayOfAlignedBamFilenames("all")); # From the "remember" hash
 		my $vars = {   'force'=>$FORCE_RERUN, 'verbose'=>$GLOBAL_VERBOSE, 'debug'=>$GLOBAL_DEBUG
-			       , 'pbs_ncpus' => 1, 'pbs_mem' => "8gb", 'pbs_walltime'=> "48:00:08"
+			       , 'pbs_ncpus' => 1, 'pbs_mem' => "8g", 'pbs_walltime'=> "172808"
 			       , 'outputDir'                 =>  $cfg->{browserWigResultsDir} # the monkey output directory. NOT the http-accessible one! That is set by "scpDestination"
 			       , 'convertToGenomeBrowserExe' =>  getBinPath($cfg, "convertToGenomeBrowserExe") # executable location
 			       , 'inputMultiFileString'      =>  ${bamMultiFileString}
@@ -1527,7 +1527,7 @@ sub buildJobSubmissionList {
 			    # $dep->{atacSeqJob} = $cfg->{jobs}->{$STEP_NUCLEOATAC}->{$k}->{jobName};
 			}
 			my $vars = { 'force' => $FORCE_RERUN, 'verbose' => $GLOBAL_VERBOSE, 'debug'=>$GLOBAL_DEBUG
-				     , 'pbs_ncpus' => 1, 'pbs_mem' => "8gb", 'pbs_walltime'=> "48:00:08"
+				     , 'pbs_ncpus' => 1, 'pbs_mem' => "8g", 'pbs_walltime'=> "172808"
 				     , 'trackFileSuffix' => $TRACKFILE_SUFFIX
 				     , 'genome'      => $cfg->{genomeName}
 				     , 'seqType'     => $cfg->{details}->{$k}->{type} # 'chip', 'rna', 'exo'... etc...
@@ -1556,7 +1556,7 @@ sub buildJobSubmissionList {
 			$dep->{$k} = $cfg->{jobs}->{$STEP_BROWSER_BINS}->{$k}->{jobName}; # Add dependencies
 		}
 		my $vars = {'force'=>$FORCE_RERUN, 'verbose'=>$GLOBAL_VERBOSE, 'debug'=>${GLOBAL_DEBUG}
-			    , 'pbs_ncpus' => 1, 'pbs_mem' => "8gb", 'pbs_walltime'=> "24:00:08"
+			    , 'pbs_ncpus' => 1, 'pbs_mem' => "8g", 'pbs_walltime'=> "86408"
 			    , 'trackFileSuffix' => $TRACKFILE_SUFFIX
 			    , 'rsyncDir'   => $cfg->{'tracksRsync'} . "/" . $cfg->{'studyName'}
 			    , 'browserDir' => $cfg->{'browserBinResultsDir'} };
@@ -1571,7 +1571,7 @@ sub buildJobSubmissionList {
 		    # (Sean's note: it doesn't go through input because the samples have already been input normalized...)
 		    my $dep  = { 'densityJob' => $cfg->{jobs}->{$STEP_DENSITY}->{$k}->{jobName} };
 		    my $vars = { 'force' => $FORCE_RERUN, 'verbose' => $GLOBAL_VERBOSE, 'debug'=>$GLOBAL_DEBUG
-				 ,'pbs_ncpus' => 1, 'pbs_mem' => "8gb", 'pbs_walltime'=> "48:00:21"
+				 ,'pbs_ncpus' => 1, 'pbs_mem' => "8g", 'pbs_walltime'=> "172821"
 			       };
 		    $vars->{genome}      = $cfg->{genomeName};
 		    $vars->{bedmap}      = getBinPath($cfg, "bedmap");
@@ -1599,7 +1599,7 @@ sub buildJobSubmissionList {
 		my $seBams = " " . join(" ", getArrayOfAlignedBamFilenames("single_end")); # All SINGLE END bam files with spaces between each one. Or " " if there aren't any! Makes sure there is at least SOME character here; qsub cannot submit the TOTALLY empty (zero length) string for some reason!
 		my $peBams = " " . join(" ", getArrayOfAlignedBamFilenames("paired_end")); # All PAIRED END bam files with spaces between each one. Or " " if there aren't any! Makes sure there is at least SOME character here; qsub cannot submit the TOTALLY empty (zero length) string for some reason!
 		my $vars = { 'force'=>$FORCE_RERUN, 'verbose'=>$GLOBAL_VERBOSE, 'debug'=>$GLOBAL_DEBUG,
-			     'pbs_ncpus' => 6, 'pbs_mem' => "12gb", 'pbs_walltime'=> "16:00:20",
+			     'pbs_ncpus' => 6, 'pbs_mem' => "12g", 'pbs_walltime'=> "57620",
 			     'subreadFeatureCountsExe'     => getBinPath($cfg, "subreadFeatureCounts") ,
 			     'subreadCountsFilename'       => $cfg->{'subread'}->{'countsFile'}   ,
 			     'outputDir'                   => $cfg->{'subreadCountsDir'}          ,
@@ -1622,7 +1622,7 @@ sub buildJobSubmissionList {
 		my ($labelsCommaDelim, $bamsByGroup) = getGroupLabelsAndBamStringByGroup("<COMMA>", " ", "<COMMA>"); # <== Will eventually look something like "exp1.bam,exp2.bam  ctrl1.bam,ctrl2.bam,ctrl3.bam"
 		my $dep = getHashPointerOfAllBamJobs();
 		my $vars = { 'force'=>$FORCE_RERUN, 'verbose'=>$GLOBAL_VERBOSE, 'debug'=>$GLOBAL_DEBUG,
-			     'pbs_ncpus' => 8, 'pbs_mem' => "12gb", 'pbs_walltime'=> "48:00:21", # cuffdiff takes forever to run
+			     'pbs_ncpus' => 8, 'pbs_mem' => "12g", 'pbs_walltime'=> "172821", # cuffdiff takes forever to run
 			     'cuffdiffExe'    => getBinPath($cfg, "cuffdiff") ,
 			     'outputDir'      => $cfg->{cuffdiffDir}     , # <== the output directory, which will be created
 			     'gtfFile'        => $cfg->{gtfFile}         ,
@@ -1639,7 +1639,7 @@ sub buildJobSubmissionList {
 		# Step added Feb 10, 2015. Requires R and the 'cummeRbund' package
 		my $depCummerbund  = { 'cuffdiff'=> $cfg->{jobs}->{$STEP_CUFFDIFF}->{"all"}->{jobName} };
 		my $varsCummerbund = { 'force'=>$FORCE_RERUN, 'verbose'=>$GLOBAL_VERBOSE, 'debug'=>$GLOBAL_DEBUG,
-				       'pbs_ncpus' => 1, 'pbs_mem' => "12gb", 'pbs_walltime'=> "18:00:21",
+				       'pbs_ncpus' => 1, 'pbs_mem' => "12g", 'pbs_walltime'=> "64821",
 				       'cuffdiffDir' => $cfg->{cuffdiffDir}     ,
 				       'script'      => $cfg->{'r'}->{cummerbund} ,
 				       'outputDir'   => $cfg->{cummerbundDir}   ,
@@ -1659,7 +1659,7 @@ sub buildJobSubmissionList {
 		# Only depends on "subread featureCounts" being completed.
 		my $dep  = { 'subread' => $cfg->{jobs}->{$STEP_SUBREAD}->{"all"}->{jobName} };
 		my $vars = { 'force'=>$FORCE_RERUN, 'verbose'=>$GLOBAL_VERBOSE, 'debug'=>$GLOBAL_DEBUG
-			     ,'pbs_ncpus' => 1, 'pbs_mem' => "4gb", 'pbs_walltime'=> "24:00:21",
+			     ,'pbs_ncpus' => 1, 'pbs_mem' => "4g", 'pbs_walltime'=> "86421",
 			     ,'R_EXE'                  => getBinPath($cfg, "R_EXE")
 			     ,'subreadCountsFilename'  => $cfg->{'subread'}->{'countsFile'}
 			     ,'subreadDir'             => $cfg->{'subreadCountsDir'}  # <== the input directory, where we'll look for a file with a filename HARD-CODED in the R script
@@ -1687,7 +1687,7 @@ sub buildJobSubmissionList {
 			(scalar(@groupArr) == scalar(@bamsGrouped)) or confess("[ERROR] The number of groups indicated (" . scalar(@groupArr) . ": from the string '$groupsColonDelim') was NOT the same as the number of bams-clustered-by-group (" . scalar(@bamsGrouped) . ": from the string '$bamsPerGroup'). This is probably a programming error.");
 		}
 		my $vars = { 'force'=>$FORCE_RERUN, 'verbose'=>$GLOBAL_VERBOSE, 'debug'=>${GLOBAL_DEBUG}
-			     ,'pbs_ncpus' => 1, 'pbs_mem' => "12gb", 'pbs_walltime'=> "48:00:21",
+			     ,'pbs_ncpus' => 1, 'pbs_mem' => "12g", 'pbs_walltime'=> "172821",
 			     ,'RSCRIPT_EXE'                 => getBinPath($cfg, "RSCRIPT_EXE")
 			     ,'edgeRScript'           => $cfg->{'r'}->{'edgeR'}
 			     ,'subreadCountsFilePath' => catfile($cfg->{subreadCountsDir}, $cfg->{subread}->{countsFile})
@@ -1738,7 +1738,7 @@ sub buildJobSubmissionList {
 	} else {
 		my $dep  = { 'edgeR'=>$cfg->{jobs}->{$STEP_EDGER_DIFF_EXPR}->{"all"}->{jobName} };
 		my $vars = { 'force'=>$FORCE_RERUN, 'verbose'=>$GLOBAL_VERBOSE, 'debug'=>${GLOBAL_DEBUG}
-			     ,'pbs_ncpus' => 1, 'pbs_mem' => "12gb", 'pbs_walltime'=> "8:00:21",
+			     ,'pbs_ncpus' => 1, 'pbs_mem' => "12g", 'pbs_walltime'=> "28821",
 			     ,'subreadRawCountsFile' => catfile($cfg->{'subreadCountsDir'}, $cfg->{'subread'}->{'countsFile'})
 			     ,'edgeRNaiveFpkmFile'   => $cfg->{'edgeR'}->{'fpkmFilePath'} # A specifically formatted FPKM matrix file generated by edgeR
 			     ,'monocleDir'           => $cfg->{'monocleDir'} # (Full path)
@@ -1772,7 +1772,7 @@ sub buildJobSubmissionList {
 					my $dep  = { 'filterJob' => $cfg->{jobs}->{$STEP_FILTER}->{$k}->{jobName} };
 					# somehow this dependency is not always found??
 					my $vars = {'force'=>$FORCE_RERUN, 'verbose'=>$GLOBAL_VERBOSE, 'debug'=>$GLOBAL_DEBUG,
-						    'pbs_ncpus' => 1, 'pbs_mem' => "2gb", 'pbs_walltime'=> "2:29:49",
+						    'pbs_ncpus' => 1, 'pbs_mem' => "2g", 'pbs_walltime'=> "8989",
 						    'outputDir'   =>  $cfg->{fastqcResultsDir} , # the PARENT output directory
 						    'fastqc'      =>  getBinPath($cfg, "fastqc")    , # binary location
 						    'inputFile'   =>  catfile($cfg->{filterResultsDir}, (noExtensions($filePrefix).".gz")) # <== Must be the file's FULL PATH. The input file will have been FILTERED at this point, and is always re-compressed with ".gz", no matter what the initial input compression was. This should ALWAYS be .gz, assuming that the "02.filtering" step generates a .gz file.
@@ -1790,7 +1790,7 @@ sub buildJobSubmissionList {
 			my $dep       = { 'prereqAlignJob' => $prereqJob };
 			# ================================= RUN FASTQC ON MAPPED BAM FILES INDIVIDUALLY ========================
 			my $fqcVars = {'force'=>$FORCE_RERUN, 'verbose'=>$GLOBAL_VERBOSE, 'debug'=>$GLOBAL_DEBUG,
-				       'pbs_ncpus' => 1, 'pbs_mem' => "2gb", 'pbs_walltime'=> "2:29:49",
+				       'pbs_ncpus' => 1, 'pbs_mem' => "2g", 'pbs_walltime'=> "8989",
 				       'outputDir'   =>  $cfg->{qcAfterMappingDir}, # the PARENT output directory
 				       'fastqc'      =>  getBinPath($cfg, "fastqc")    , # binary location
 				       'inputFile'   =>  $bamFile # <== Must be the file's FULL PATH
@@ -1801,7 +1801,7 @@ sub buildJobSubmissionList {
 			if ($shouldRunRSEQC) {
 				($GLOBAL_DRY_RUN or (-e "$cfg->{RSEQC}->{rseqc_parent_dir}/geneBody_coverage.py")) or confess "[ERROR] RSEQC wants to run, but we could not find any indication that its scripts actually exists in the alleged location, specifically: $cfg->{RSEQC}->{rseqc_parent_dir}";
 				my $rseqVars = { 'force'=>$FORCE_RERUN, 'verbose'=>$GLOBAL_VERBOSE, 'debug'=>$GLOBAL_DEBUG
-						 ,'pbs_ncpus' => 1, 'pbs_mem' => "8gb", 'pbs_walltime'=> "48:00:00" # super long time is allocated here...
+						 ,'pbs_ncpus' => 1, 'pbs_mem' => "8g", 'pbs_walltime'=> "172800" # super long time is allocated here...
 						 ,'outputDir'         => $cfg->{rseqcQualityDir}        # the output directory, which will be created
 						 ,'inputBAM'          => $bamFile # <== Must be the input bam file's FULL PATH
 						 ,'bedAnnot'          => $cfg->{bedAnnotForRSEQC} # location of bed-format annotation files for RSEQC
@@ -1826,7 +1826,7 @@ sub buildJobSubmissionList {
 				$dependOnAllBams->{$prereqJob} = $prereqJob; # save this as a prerequisite!
 			}
 			my $multiVars = {  'force'=>$FORCE_RERUN, 'verbose'=>$GLOBAL_VERBOSE, 'debug'=>$GLOBAL_DEBUG
-					   ,'pbs_ncpus' => 1, 'pbs_mem' => "16gb", 'pbs_walltime'=> "96:00:00"
+					   ,'pbs_ncpus' => 1, 'pbs_mem' => "16g", 'pbs_walltime'=> "345600"
 					   ,'outputDir'       => $cfg->{rseqcQualityDir}         # the output directory, which will be created
 					   ,'inputBamDir'     => $cfg->{mappingResultsDir}       # we specify a DIRECTORY of bam files
 					   ,'bedAnnot'        => $cfg->{bedAnnotForRSEQC}        # location of bed-format annotation files for RSEQC
