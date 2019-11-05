@@ -50,10 +50,11 @@ if (not -d $ENV{BINFBINROOT}) {
 my $ADMIN_GROUP_NAME  = "admin";
 my $NORMAL_GROUP_NAME = "normal";
 
-my %QSETTINGS = ( "dest"                  => {"$ADMIN_GROUP_NAME"   => "-q Bio"
-					     , "$NORMAL_GROUP_NAME" => "-q General" }
-		  , "grouplist"           => {"$ADMIN_GROUP_NAME"   => "-A bioqueue"
-					     , "$NORMAL_GROUP_NAME" => "-A genqueue" }
+my %QSETTINGS = (
+#			"dest"                  => {"$ADMIN_GROUP_NAME"   => "-q Bio"
+#					     , "$NORMAL_GROUP_NAME" => "-q General" }
+#		  , "grouplist"           => {"$ADMIN_GROUP_NAME"   => "-A bioqueue"
+#					     , "$NORMAL_GROUP_NAME" => "-A genqueue" }
 		  , "ncpus_for_alignment" => {"$ADMIN_GROUP_NAME"   => "6"  # Privileged users = 4 threads per job, other users = 1 thread
 					     , "$NORMAL_GROUP_NAME" => "2" }
 		  , "tophat_needs"        => {"pbs_mem" => "12g" }
@@ -66,11 +67,11 @@ my %QSETTINGS = ( "dest"                  => {"$ADMIN_GROUP_NAME"   => "-q Bio"
 		  , "default_walltime"    => {"$ADMIN_GROUP_NAME"    => "259200"
 					     , "$NORMAL_GROUP_NAME"  => "259200" }
 		  );
-my $UNIX_GRP_WORK       = "1004"; # <== Anybody in this group gets the be 'privileged' for job submission
-my $UNIX_GRP_CAVE       = "3050"; # <== Anybody in this group gets the be 'privileged' for job submission
-my $UNIX_GRP_B2B        = "2050"; # <== Anybody in this group gets the be 'privileged' for job submission
-my $UNIX_GRP_BIOQUEUE   = "35098"; # <== Anybody in this group gets the be 'privileged' for job submission
-my @UNIX_BIO_GRP_ID_ARRAY = ($UNIX_GRP_WORK, $UNIX_GRP_CAVE, $UNIX_GRP_B2B, $UNIX_GRP_BIOQUEUE); # HARD CODED right now for rigel specifically. Check /etc/groups for a list by ID.
+#my $UNIX_GRP_WORK       = "1004"; # <== Anybody in this group gets the be 'privileged' for job submission
+#my $UNIX_GRP_CAVE       = "3050"; # <== Anybody in this group gets the be 'privileged' for job submission
+#my $UNIX_GRP_B2B        = "2050"; # <== Anybody in this group gets the be 'privileged' for job submission
+#my $UNIX_GRP_BIOQUEUE   = "35098"; # <== Anybody in this group gets the be 'privileged' for job submission
+#my @UNIX_BIO_GRP_ID_ARRAY = ($UNIX_GRP_WORK, $UNIX_GRP_CAVE, $UNIX_GRP_B2B, $UNIX_GRP_BIOQUEUE); # HARD CODED right now for rigel specifically. Check /etc/groups for a list by ID.
 
 my $SHOULD_ATTEMPT_TO_RUN_MONOCLE = 0; # Never did really get this working right...
 
@@ -1104,21 +1105,21 @@ sub setJobInfo {
     return($jobFullName, $qsubCmd); # <== this info is used by a few things later
 }
 
-sub getUserPriv { # Gets user privilege. See "QSETTINGS"
-	# No arguments!
-	# Note that this is hard-coded for the particular system right now---if we are NOT on Rigel, then just return 100 for everyone.
-	if (not(Sys::Hostname::hostname() =~ m/^rigel/i)) {
-		# If we aren't on rigel, then EVERYONE should act like a 'privileged' user
-		return $ADMIN_GROUP_NAME;
-	}
-	# Ok, I guess we are on the RIGEL machine.
-	#my $username = $ENV{LOGNAME} || $ENV{USER} || getpwuid($<); chomp($username);
-	my @gids = POSIX::getgroups(); # getgroups() is from the POSIX module
-	for my $priority (@UNIX_BIO_GRP_ID_ARRAY) {
-		if (grep(/^$priority$/, @gids)) { return $ADMIN_GROUP_NAME; } # apparently the user belongs to a privileged group--let them use more CPUs, etc.
-	}
-	return $NORMAL_GROUP_NAME;
-}
+#sub getUserPriv { # Gets user privilege. See "QSETTINGS"
+#	# No arguments!
+#	# Note that this is hard-coded for the particular system right now---if we are NOT on Rigel, then just return 100 for everyone.
+#	if (not(Sys::Hostname::hostname() =~ m/^rigel/i)) {
+#		# If we aren't on rigel, then EVERYONE should act like a 'privileged' user
+#		return $ADMIN_GROUP_NAME;
+#	}
+#	# Ok, I guess we are on the RIGEL machine.
+#	#my $username = $ENV{LOGNAME} || $ENV{USER} || getpwuid($<); chomp($username);
+#	my @gids = POSIX::getgroups(); # getgroups() is from the POSIX module
+#	for my $priority (@UNIX_BIO_GRP_ID_ARRAY) {
+#		if (grep(/^$priority$/, @gids)) { return $ADMIN_GROUP_NAME; } # apparently the user belongs to a privileged group--let them use more CPUs, etc.
+#	}
+#	return $NORMAL_GROUP_NAME;
+#}
 
 sub get_qsub_cmd($;$) { # returns something like: qsub -q Bio -A "bioqueue" (with the appropriate groups set)
 	my ($cfg, $hr) = @_; # hr is an (optional) hash ref of arguments to qsub! Example: "{h_rt=>"3600", mem_free=4g}"
