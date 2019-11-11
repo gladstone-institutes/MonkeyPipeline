@@ -14,8 +14,8 @@ use Data::Dumper;
 use Getopt::Long;
 use Cwd 'abs_path';
 use lib dirname( abs_path $0);
-my $MONKEY_BASEDIR; BEGIN { $MONKEY_BASEDIR = "/data/work/Code/alexgw/monkey_agw"; } #$MONKEY_BASEDIR = (defined($ENV{'MONKEY_BASEDIR'})) ? $ENV{'MONKEY_BASEDIR'} : "/data/work/Code/alexgw/monkey_agw";
-use lib qw(/data/applications/libperl/lib/perl5/);
+my $MONKEY_BASEDIR; BEGIN { $MONKEY_BASEDIR = "/wynton/group/gladstone/biocore/monkey"; } #$MONKEY_BASEDIR = (defined($ENV{'MONKEY_BASEDIR'})) ? $ENV{'MONKEY_BASEDIR'} : "/data/work/Code/alexgw/monkey_agw";
+use lib qw(/wynton/group/gladstone/third_party/perl5/libperl/lib/perl5);
 use lib "$MONKEY_BASEDIR"; # To make sure we find bananas_agw
 use bananas_agw; # Looks for it in $MONKEY_BASEDIR
 
