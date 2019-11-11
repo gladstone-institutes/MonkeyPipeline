@@ -864,7 +864,7 @@ sub checkConfig {
 
     $cfg->{subread}->{countsFile}     = "subread.featureCounts.counts.txt"; # <-- literal filename that will be looked for later
     $cfg->{edgeR}->{fpkmFilePath}     = catfile($cfg->{edgeRDir}, "fpkm_naive.txt"); # note: hard coded in the edgeR script for now
-    $cfg->{RSEQC}->{rseqc_parent_dir} = "/usr/bin/"; # "/data/applications/rseqc/rseqc-2.6.1/build/scripts-2.7/"; # Location of the RSEQC python files
+    $cfg->{RSEQC}->{rseqc_parent_dir} = "/wynton/group/gladstone/third_party/rseqc/current/build/scripts-2.7"; # "/data/applications/rseqc/rseqc-2.6.1/build/scripts-2.7/"; # Location of the RSEQC python files
 
     # Set default values for certain unspecified variables.
     setIfUndefined($cfg, 'shouldFilterAdapters', "TRUE");    # Default is to filter adapters. If you don't want this, then specify "shouldFilterAdapters = FALSE".
