@@ -46,7 +46,7 @@ if (nchar(FPKM_MATRIX_FILE) > 0 || nchar(OUTDIR) > 0) {
           AGW_DEBUG <- FALSE 
      }
      if (AGW_DEBUG) {
-          FPKM_MATRIX_FILE = "/data/work/Code/alexgw/monkey_agw/test_suite/test_fpkm_naive.txt" } # just a test file from another project
+          FPKM_MATRIX_FILE = "/wynton/group/gladstone/biocore/monkey/test_suite/test_fpkm_naive.txt" } # just a test file from another project
      else {
           inputArgs = commandArgs(trailingOnly=TRUE); stopifnot(length(inputArgs) > 0 )
           FPKM_MATRIX_FILE <- inputArgs[1]

@@ -3,7 +3,7 @@ my $syslog = "X.04.mapping.syslog.txt";
 
 use strict; use warnings; use Carp; # Carp = "confess" function
 use File::Spec::Functions qw(catfile);   use Data::Dumper;   use File::Basename;
-use lib "/data/work/Code/alexgw/monkey_agw"; use bananas_agw; # To make sure we find bananas_agw
+use lib "/wynton/group/gladstone/biocore/monkey"; use bananas_agw; # To make sure we find bananas_agw
 
 bananas_agw::requireEnvOrDie('alignerPath','alignerExeWithoutPath','samtools','minMapQ','filterDir','mappingDir','sampleName','inputFile1','finalBam','sortMethod');
 

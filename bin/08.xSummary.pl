@@ -2,7 +2,7 @@
 
 use strict; use warnings; use Carp; # Carp = "confess" function
 use File::Spec::Functions qw(catfile);   use Data::Dumper;   use File::Basename;
-use lib "/data/work/Code/alexgw/monkey_agw"; use bananas_agw; # To make sure we find bananas_agw
+use lib "/wynton/group/gladstone/biocore/monkey"; use bananas_agw; # To make sure we find bananas_agw
 
 bananas_agw::requireEnvOrDie('rsyncDir','browserDir','trackFileSuffix'); # <-- these vars MUST be defined in the %ENV hash
 my $force    = bananas_agw::envLooksTrue("force");
