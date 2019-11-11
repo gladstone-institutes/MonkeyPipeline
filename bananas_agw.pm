@@ -213,7 +213,8 @@ sub getMostExtensivePythonPath() {
 	my $current = (defined($ENV{PYTHONPATH}) ? $ENV{PYTHONPATH} : "");
 	return join(':'
 		    , ($current
-			, "/wynton/group/gladstone/third_party/python2/current/lib/python2.7/site-packages")
+			, "/wynton/group/gladstone/third_party/libpython2.7/lib64/python2.7/site-packages"
+			, "/wynton/group/gladstone/third_party/libpython2.7/lib/python2.7/site-packages")
 		   );
 }
 
