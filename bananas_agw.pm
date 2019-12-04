@@ -55,7 +55,7 @@ my %QSETTINGS = (
 #					     , "$NORMAL_GROUP_NAME" => "-q General" }
 #		  , "grouplist"           => {"$ADMIN_GROUP_NAME"   => "-A bioqueue"
 #					     , "$NORMAL_GROUP_NAME" => "-A genqueue" }
-		  , "ncpus_for_alignment" => {"$ADMIN_GROUP_NAME"   => "6"  # Privileged users = 4 threads per job, other users = 1 thread
+		    "ncpus_for_alignment" => {"$ADMIN_GROUP_NAME"   => "6"  # Privileged users = 4 threads per job, other users = 1 thread
 					     , "$NORMAL_GROUP_NAME" => "2" }
 		  , "tophat_needs"        => {"pbs_mem" => "12g" }
 		  , "star_aligner_needs"  => {"pbs_mem" => "33g" } # needs a lot of ram! Default is 31 GB limit for just the aligner
