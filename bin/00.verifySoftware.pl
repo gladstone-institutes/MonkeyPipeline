@@ -2,7 +2,7 @@
 
 use strict; use warnings; use Carp; # Carp = "confess" function
 use File::Spec::Functions qw(catfile);   use Data::Dumper;   use File::Basename;
-use lib "/wynton/group/gladstone/biocore/monkey"; use bananas_agw; # To make sure we find bananas_agw
+use lib "/wynton/group/gladstone/biocore/MonkeyPipeline"; use bananas_agw; # To make sure we find bananas_agw
 
 $ENV{'req_exes'} = "bash perl python fsadf";
 $ENV{'req_r_libs'} = "edgeR";
