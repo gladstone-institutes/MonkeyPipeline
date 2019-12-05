@@ -67,11 +67,11 @@ my %QSETTINGS = (
 		  , "default_walltime"    => {"$ADMIN_GROUP_NAME"    => "259200"
 					     , "$NORMAL_GROUP_NAME"  => "259200" }
 		  );
-#my $UNIX_GRP_WORK       = "1004"; # <== Anybody in this group gets the be 'privileged' for job submission
-#my $UNIX_GRP_CAVE       = "3050"; # <== Anybody in this group gets the be 'privileged' for job submission
-#my $UNIX_GRP_B2B        = "2050"; # <== Anybody in this group gets the be 'privileged' for job submission
-#my $UNIX_GRP_BIOQUEUE   = "35098"; # <== Anybody in this group gets the be 'privileged' for job submission
-#my @UNIX_BIO_GRP_ID_ARRAY = ($UNIX_GRP_WORK, $UNIX_GRP_CAVE, $UNIX_GRP_B2B, $UNIX_GRP_BIOQUEUE); # HARD CODED right now for rigel specifically. Check /etc/groups for a list by ID.
+my $UNIX_GRP_WORK       = "1004"; # <== Anybody in this group gets the be 'privileged' for job submission
+my $UNIX_GRP_CAVE       = "3050"; # <== Anybody in this group gets the be 'privileged' for job submission
+my $UNIX_GRP_B2B        = "2050"; # <== Anybody in this group gets the be 'privileged' for job submission
+my $UNIX_GRP_BIOQUEUE   = "35098"; # <== Anybody in this group gets the be 'privileged' for job submission
+my @UNIX_BIO_GRP_ID_ARRAY = ($UNIX_GRP_WORK, $UNIX_GRP_CAVE, $UNIX_GRP_B2B, $UNIX_GRP_BIOQUEUE); # HARD CODED right now for rigel specifically. Check /etc/groups for a list by ID.
 
 my $SHOULD_ATTEMPT_TO_RUN_MONOCLE = 0; # Never did really get this working right...
 
