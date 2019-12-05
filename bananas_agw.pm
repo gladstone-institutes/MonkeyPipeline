@@ -1130,8 +1130,8 @@ sub get_qsub_cmd($;$) { # returns something like: qsub -q Bio -A "bioqueue" (wit
 	#if (!defined($hr)) { my %h = (); $hr = \%h; }; # just define the hash ref if it wasn't actually passed in...
 	my $qsub         = getBinPath($cfg,"qsub");
 	my $userPriv     = getUserPriv();
-	my $qdest_param  = $QSETTINGS{dest}{$userPriv};
-	my $qgroup_param = $QSETTINGS{grouplist}{$userPriv};
+#	my $qdest_param  = $QSETTINGS{dest}{$userPriv};
+#	my $qgroup_param = $QSETTINGS{grouplist}{$userPriv};
 	my $mem      = "-l mem_free="      . (defined($hr->{pbs_mem})      ? $hr->{pbs_mem}      : $QSETTINGS{default_mem}{$userPriv});
 #	my $walltime = "-l h_rt=" . (defined($hr->{sge_h_rt}) ? $hr->{sge_h_rt} : $QSETTINGS{default_h_rt}{$userPriv});
 	my $walltime = "-l h_rt=259200";
