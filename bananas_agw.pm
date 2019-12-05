@@ -1105,21 +1105,21 @@ sub setJobInfo {
     return($jobFullName, $qsubCmd); # <== this info is used by a few things later
 }
 
-#sub getUserPriv { # Gets user privilege. See "QSETTINGS"
-#	# No arguments!
-#	# Note that this is hard-coded for the particular system right now---if we are NOT on Rigel, then just return 100 for everyone.
-#	if (not(Sys::Hostname::hostname() =~ m/^rigel/i)) {
-#		# If we aren't on rigel, then EVERYONE should act like a 'privileged' user
-#		return $ADMIN_GROUP_NAME;
-#	}
-#	# Ok, I guess we are on the RIGEL machine.
-#	#my $username = $ENV{LOGNAME} || $ENV{USER} || getpwuid($<); chomp($username);
-#	my @gids = POSIX::getgroups(); # getgroups() is from the POSIX module
-#	for my $priority (@UNIX_BIO_GRP_ID_ARRAY) {
-#		if (grep(/^$priority$/, @gids)) { return $ADMIN_GROUP_NAME; } # apparently the user belongs to a privileged group--let them use more CPUs, etc.
-#	}
-#	return $NORMAL_GROUP_NAME;
-#}
+sub getUserPriv { # Gets user privilege. See "QSETTINGS"
+	# No arguments!
+	# Note that this is hard-coded for the particular system right now---if we are NOT on Rigel, then just return 100 for everyone.
+	if (not(Sys::Hostname::hostname() =~ m/^rigel/i)) {
+		# If we aren't on rigel, then EVERYONE should act like a 'privileged' user
+		return $ADMIN_GROUP_NAME;
+	}
+	# Ok, I guess we are on the RIGEL machine.
+	#my $username = $ENV{LOGNAME} || $ENV{USER} || getpwuid($<); chomp($username);
+	my @gids = POSIX::getgroups(); # getgroups() is from the POSIX module
+	for my $priority (@UNIX_BIO_GRP_ID_ARRAY) {
+		if (grep(/^$priority$/, @gids)) { return $ADMIN_GROUP_NAME; } # apparently the user belongs to a privileged group--let them use more CPUs, etc.
+	}
+	return $NORMAL_GROUP_NAME;
+}
 
 sub get_qsub_cmd($;$) { # returns something like: qsub -q Bio -A "bioqueue" (with the appropriate groups set)
 	my ($cfg, $hr) = @_; # hr is an (optional) hash ref of arguments to qsub! Example: "{h_rt=>"3600", mem_free=4g}"
@@ -1129,7 +1129,7 @@ sub get_qsub_cmd($;$) { # returns something like: qsub -q Bio -A "bioqueue" (wit
 	# or qsub -q General -A "genqueue" [/path/to/script]
 	#if (!defined($hr)) { my %h = (); $hr = \%h; }; # just define the hash ref if it wasn't actually passed in...
 	my $qsub         = getBinPath($cfg,"qsub");
-#	my $userPriv     = getUserPriv();
+	my $userPriv     = getUserPriv();
 	my $qdest_param  = $QSETTINGS{dest}{$userPriv};
 	my $qgroup_param = $QSETTINGS{grouplist}{$userPriv};
 	my $mem      = "-l mem_free="      . (defined($hr->{pbs_mem})      ? $hr->{pbs_mem}      : $QSETTINGS{default_mem}{$userPriv});
