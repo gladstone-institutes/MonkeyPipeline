@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript  --no-save  --no-restore  --no-site-file  --no-init-file
+#!/wynton/group/gladstone/third_party/Rscript  --no-save  --no-restore  --no-site-file  --no-init-file
 
 require(methods) # <-- just in case we use RScript to run this
 
@@ -96,7 +96,6 @@ agw_clip_bam_paths <- function(names.vec) {
      names.vec <- sub("[-._](galGal[0-9]+|mm[0-9]+|hg[0-9]+)[-._]q[0-9]+", "", names.vec, perl=T, ignore.case=T) # remove the species-and-then-quality suffix (e.g., _mm10_q30, if any). Only do this if it's a recognized species.
      return(names.vec)
 }
-
 fpkm_log_matrix <- log2(1+fpkm_matrix)
 
 n_samples <- ncol(fpkm_log_matrix)
