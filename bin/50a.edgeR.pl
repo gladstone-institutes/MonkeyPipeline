@@ -10,7 +10,7 @@ use File::Basename;
 use File::Spec::Functions qw(catfile);
 use Data::Dumper;
 use Carp; # backtrace on errors. Has the "confess" function. Use this instead of "die" if you want useful information!
-use lib "/wynton/group/gladstone/biocore/monkey"; # To make sure we find bananas_agw
+use lib "/wynton/group/gladstone/biocore/MonkeyPipeline"; # To make sure we find bananas_agw
 use bananas_agw;
 
 bananas_agw::requireEnvOrDie('RSCRIPT_EXE', 'edgeRScript', 'subreadCountsFilePath', 'outputDir', 'groupList', 'bamsPerGroup', 'majorDelim', 'minorDelim'); # <-- these vars MUST be defined in the %ENV hash
