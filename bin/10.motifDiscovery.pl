@@ -7,7 +7,7 @@
 use strict; use warnings; use Carp; # Carp has "confess"
 use File::Spec::Functions qw(catfile);
 use Data::Dumper;
-use lib "/wynton/group/gladstone/biocore/monkey"; use bananas_agw; # To make sure we find bananas_agw
+use lib "/wynton/group/gladstone/biocore/MonkeyPipeline"; use bananas_agw; # To make sure we find bananas_agw
 
 bananas_agw::requireEnvOrDie('genome','bedops','bedtools','peakMotifs','bedtools','fasta','repMask','infile','motifsDir','sampleName'); # <-- these vars MUST be defined in the %ENV hash
 # Check that the ZLM_LICENSE environment variable points to a valid file.
