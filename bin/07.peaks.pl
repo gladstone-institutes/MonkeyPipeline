@@ -5,7 +5,7 @@ my $syslog = "X.07.peaks.syslog.txt";
 use strict; use warnings; use Carp; # Carp = "confess" function
 use File::Spec::Functions qw(catfile);
 use Data::Dumper;
-use lib "/wynton/group/gladstone/biocore/monkey"; # To make sure we find bananas_agw
+use lib "/wynton/group/gladstone/biocore/MonkeyPipeline"; # To make sure we find bananas_agw
 use bananas_agw;
 
 my $tagDensityThreshold = 100;
