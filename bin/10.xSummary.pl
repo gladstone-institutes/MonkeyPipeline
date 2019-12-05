@@ -7,7 +7,7 @@
 use strict; use warnings; use Carp; # Carp has "confess"
 use File::Spec::Functions qw(catfile);
 use Data::Dumper;
-use lib "/wynton/group/gladstone/biocore/monkey"; use bananas_agw; # To make sure we find bananas_agw
+use lib "/wynton/group/gladstone/biocore/MonkeyPipeline"; use bananas_agw; # To make sure we find bananas_agw
 
 bananas_agw::requireEnvOrDie('studyName','motifDir','peakDir','bedops','bedmap','bedtools','genomeFasta','step1','step2','sortBed'); # <-- these vars MUST be defined in the %ENV hash
 my $force       = bananas_agw::envLooksTrue("force");
