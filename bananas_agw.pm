@@ -1133,7 +1133,8 @@ sub get_qsub_cmd($;$) { # returns something like: qsub -q Bio -A "bioqueue" (wit
 	my $qdest_param  = $QSETTINGS{dest}{$userPriv};
 	my $qgroup_param = $QSETTINGS{grouplist}{$userPriv};
 	my $mem      = "-l mem_free="      . (defined($hr->{pbs_mem})      ? $hr->{pbs_mem}      : $QSETTINGS{default_mem}{$userPriv});
-	my $walltime = "-l h_rt=" . (defined($hr->{sge_h_rt}) ? $hr->{sge_h_rt} : $QSETTINGS{default_h_rt}{$userPriv});
+#	my $walltime = "-l h_rt=" . (defined($hr->{sge_h_rt}) ? $hr->{sge_h_rt} : $QSETTINGS{default_h_rt}{$userPriv});
+	my $walltime = "-l h_rt=259200";
 	my $ncpus    = "-l ncpus="    . (defined($hr->{pbs_ncpus})    ? $hr->{pbs_ncpus}    : $QSETTINGS{default_ncpus}{$userPriv});
 	#my $nodes    = "-pe smp 1"; # <== ????????? unclear if this is useful
 	my $stderr   = ""; #"-e /dev/null"
