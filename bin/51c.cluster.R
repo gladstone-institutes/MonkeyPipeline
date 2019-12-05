@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript  --no-save  --no-restore  --no-site-file  --no-init-file
+#!/wynton/group/gladstone/third_party/Rscript  --no-save  --no-restore  --no-site-file  --no-init-file
 
 # Warning: single quotes are NOT ALLOWED on any of the PBS lines above! They trigger a "qsub: unmatched" error and exit code 1.
 

@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript  --no-save  --no-restore  --no-site-file  --no-init-file
+#!/wynton/group/gladstone/third_party/Rscript  --no-save  --no-restore  --no-site-file  --no-init-file
 
 
 
