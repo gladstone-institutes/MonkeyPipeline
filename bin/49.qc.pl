@@ -9,7 +9,7 @@ use strict; use warnings; use Carp; # Carp = "confess" function
 use File::Spec::Functions qw(catfile);
 #use Data::Dumper;
 use File::Basename;
-use lib "/wynton/group/gladstone/biocore/monkey"; # To make sure we find bananas_agw
+use lib "/wynton/group/gladstone/biocore/MonkeyPipeline"; # To make sure we find bananas_agw
 use bananas_agw;
 
 sub getOutputPrefixForFastQC($$) { # Alex's function for figuring out what the actual name of the output directory / output HTML file / output ZIP file that FastQC will generate.
