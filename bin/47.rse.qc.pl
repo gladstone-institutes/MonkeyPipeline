@@ -22,7 +22,7 @@ use File::Spec::Functions qw(catfile);
 use Data::Dumper;
 use File::Basename;
 use Digest::MD5; # Let's us make a "digest" (a hash function) of a long full-path string to an MD5 one
-use lib "/wynton/group/gladstone/biocore/monkey"; # To make sure we find bananas_agw
+use lib "/wynton/group/gladstone/biocore/MonkeyPipeline"; # To make sure we find bananas_agw
 use bananas_agw;
 
 bananas_agw::requireEnvOrDie('outputDir','inputBAM','bedAnnot','python2_7_exe','scriptParentDir'); # <-- these vars MUST be defined in the %ENV hash
