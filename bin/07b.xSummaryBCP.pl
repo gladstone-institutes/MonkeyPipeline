@@ -2,7 +2,7 @@
 # This runs after BCP had done its thing, and summarizes a bunch of files. (See "Percent tags in peaks" below)
 use strict; use warnings; use Carp; # Carp = "confess" function
 use File::Spec::Functions qw(catfile);   use Data::Dumper;   use File::Basename;
-use lib "/wynton/group/gladstone/biocore/monkey"; use bananas_agw; # To make sure we find bananas_agw
+use lib "/wynton/group/gladstone/biocore/MonkeyPipeline"; use bananas_agw; # To make sure we find bananas_agw
 bananas_agw::requireEnvOrDie('genome','bedmap','tagsDir','peaksDir','sampleName'); # <-- these vars MUST be defined in the %ENV ha
 my ($force, $verbose) = bananas_agw::envLooksTrue("force", "verbose");
 -e $ENV{bedmap}   or confess "Failed to find the required 'bedmap' executable,  which was supposed to be located here: $ENV{bedmap}";
