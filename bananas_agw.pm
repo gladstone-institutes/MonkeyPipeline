@@ -780,9 +780,9 @@ sub setupBin($) {
 
 	$cfg->{bin}->{peakMotifs}                = "/wynton/group/gladstone/third_party/rsat/rsat/perl-scripts/peak-motifs"; # must be hardcoded to work... dubious. Also requires Perl library "MIME::Lite"
 
-	$cfg->{bin}->{R_EXE}                     = "/usr/bin/R";
-	$cfg->{bin}->{RSCRIPT_EXE}               = "/usr/bin/Rscript"; # Some sub-scripts (like 51c.cluster.R) need this, you but should not need to run it manually.
-	$cfg->{bin}->{python2_7_exe}             = "/bin/python2.7"; # location of a python executable with version >= 2.7
+	$cfg->{bin}->{R_EXE}                     = "/wynton/group/gladstone/third_party/monkey_path/R";
+	$cfg->{bin}->{RSCRIPT_EXE}               = "/wynton/group/gladstone/third_party/monkey_path/Rscript"; # Some sub-scripts (like 51c.cluster.R) need this, you but should not need to run it manually.
+	$cfg->{bin}->{python2_7_exe}             = "/usr/bin/python2.7"; # location of a python executable with version >= 2.7
 
 #	$cfg->{bin}->{atacPython}                = "/home/sthomas/envs/atac/bin/python";
 #	$cfg->{bin}->{nucleoatac}                = "/home/sthomas/envs/atac/bin/nucleoatac";
