@@ -1141,7 +1141,7 @@ sub get_qsub_cmd($;$) { # returns something like: qsub -q Bio -A "bioqueue" (wit
 	my $stdout   = ""; #"-o /dev/null"
 	$mem      =~ m/^-l mem_free=\d+[gm]$/                or confess "[ERROR]: 'mem_free' parameter needs to be a number followed by 'g' or 'm'! Yours is: $mem";
 	$walltime =~ m/^-l h_rt=\d+$/ or confess "[ERROR]: 'h_rt' parameter must be in units of seconds and look like this: 3600. Yours is: $walltime";
-	$ncpus    =~ m/^-pe smp=[1-9][0-9]*$/                   or confess "[ERROR]: 'ncpus' parameter must be numeric integer greater than 0! Yours is: $ncpus";
+	$ncpus    =~ m/^-pe smp [1-9][0-9]*$/                   or confess "[ERROR]: 'ncpus' parameter must be numeric integer greater than 0! Yours is: $ncpus";
 	return qq{$qsub $mem $walltime $ncpus $stderr $stdout};
 }
 
