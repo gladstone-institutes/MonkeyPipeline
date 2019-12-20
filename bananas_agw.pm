@@ -1135,13 +1135,13 @@ sub get_qsub_cmd($;$) { # returns something like: qsub -q Bio -A "bioqueue" (wit
 	my $mem      = "-l mem_free="      . (defined($hr->{pbs_mem})      ? $hr->{pbs_mem}      : $QSETTINGS{default_mem}{$userPriv});
 #	my $walltime = "-l h_rt=" . (defined($hr->{sge_h_rt}) ? $hr->{sge_h_rt} : $QSETTINGS{default_h_rt}{$userPriv});
 	my $walltime = "-l h_rt=259200";
-	my $ncpus    = "-l ncpus="    . (defined($hr->{pbs_ncpus})    ? $hr->{pbs_ncpus}    : $QSETTINGS{default_ncpus}{$userPriv});
+	my $ncpus    = "-pe smp"    . (defined($hr->{pbs_ncpus})    ? $hr->{pbs_ncpus}    : $QSETTINGS{default_ncpus}{$userPriv});
 	#my $nodes    = "-pe smp 1"; # <== ????????? unclear if this is useful
 	my $stderr   = ""; #"-e /dev/null"
 	my $stdout   = ""; #"-o /dev/null"
 	$mem      =~ m/^-l mem_free=\d+[gm]$/                or confess "[ERROR]: 'mem_free' parameter needs to be a number followed by 'g' or 'm'! Yours is: $mem";
 	$walltime =~ m/^-l h_rt=\d+$/ or confess "[ERROR]: 'h_rt' parameter must be in units of seconds and look like this: 3600. Yours is: $walltime";
-	$ncpus    =~ m/^-l ncpus=[1-9][0-9]*$/                   or confess "[ERROR]: 'ncpus' parameter must be numeric integer greater than 0! Yours is: $ncpus";
+	$ncpus    =~ m/^-pe smp [1-9][0-9]*$/                   or confess "[ERROR]: 'ncpus' parameter must be numeric integer greater than 0! Yours is: $ncpus";
 	return qq{$qsub $mem $walltime $ncpus $stderr $stdout};
 }
 
