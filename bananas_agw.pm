@@ -1906,7 +1906,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 		my $WALLTIME_FOR_WAIT_JOBS = "300"; # these really only take like 1 second to run
 		my $IMMEDIATELY_HOLD_JOB   = " -h "; # Starts the job in the HELD state, until it is 'qrls'-ed.
 		# Note that this job gets HELD immediately upon submission! It can't run until it gets 'qrls'-ed later.
-		appendLinesInPlaceNL(\$lnum, \$OUT_HEADER_PRINT, qq{${SIGNAL_TO_START_VARNAME}=`echo "sleep 1" | } . get_qsub_cmd($cfg, {'pbs_walltime'=>$WALLTIME_FOR_WAIT_JOBS, 'pbs_stderr'=>"/dev/null", 'pbs_stdout'=>"/dev/null" }) . qq{ ${IMMEDIATELY_HOLD_JOB} -V -N $cfg->{studyName}_Start_signal} . qq{ | awk '{print \$3}'`});
+		appendLinesInPlaceNL(\$lnum, \$OUT_HEADER_PRINT, qq{${SIGNAL_TO_START_VARNAME}=`echo "sleep 1" | } . get_qsub_cmd($cfg, {'pbs_walltime'=>$WALLTIME_FOR_WAIT_JOBS, 'pbs_stderr'=>"/dev/null", 'pbs_stdout'=>"/dev/null" }) . qq{ ${IMMEDIATELY_HOLD_JOB} -V -N $cfg->{studyName}_Start_signal`});
 	}
 	print OF $OUT_HEADER_PRINT;
 	#printf OF ($GLOBAL_VERBOSE) ? "set -o verbose  # <== verbose \n" : "# (Not setting verbose mode) \n";
@@ -1922,7 +1922,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 				foreach my $d (@dependenciesArr) {
 					$d =~ s/^[\$]//; # Remove the leading '$' from each variable so it doesn't get auto-evaluated when we $echo it
 					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "    * The dependency variable \"$d\" is => \"\$$d\" : Confirming that this is a real job with 'qstat -f -j \$$d' "}); # note that the 'd-with-dollar-sign' gets EVALUATED since it has a dollar sign. So this will print something like "Dependency result was: 5928.machine" and not the actual dependency name.
-					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{qstat -j \$$d > /dev/null });
+					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{qstat -j \$(echo '\$$d' | awk '{print \$3}') > /dev/null });
 					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "         * 'qstat' result: \$? (should be 0)"});
 				}
 			}
@@ -1933,7 +1933,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 			appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{$qcmd}); # Each job has a 'qsub' command associated with it, which we finally print here.
 			($GLOBAL_VERBOSE) and appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo }.'$?'.qq{ "was the exit code for the submission of job $jname ..."}); # Causes the shell to print the above command's exit code (shell variable is $?) to STDOUT
 			if ($GLOBAL_VERBOSE && !$RUN_DIRECTLY_WITHOUT_TORQUE) {
-				my $submitText = ($RUN_DIRECTLY_WITHOUT_TORQUE) ? "directly ran (without TORQUE)" : "submitted to TORQUE";
+				my $submitText = ($RUN_DIRECTLY_WITHOUT_TORQUE) ? "directly ran (without TORQUE)" : "submitted to SGE";
 				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "[OK] we ${submitText} the job '${jname}' (Step: '$stepName' for sample '$sampleName') (after line $lnum of <$outfile>) -> result = \"\$${jname}\""\n\n}); # extra newlines to mark the end of this job
 			}
 			print OF $OUTPRINT;
