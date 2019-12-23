@@ -1914,7 +1914,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 		foreach my $sampleName (sort keys %{$cfg->{jobs}->{$stepName}} ) {
 			my $qcmd  = $cfg->{jobs}->{$stepName}->{$sampleName}->{qsub};
 			my $jname = $cfg->{jobs}->{$stepName}->{$sampleName}->{jobName};
-			my @jidname = split(/\s+/, $jname);
+			my $jidname = `echo "$jname" |awk '{print \$3}'`;
 			my $OUTPRINT = '';
 			($GLOBAL_VERBOSE) and appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo ''});
 			if ($GLOBAL_VERBOSE && !$RUN_DIRECTLY_WITHOUT_TORQUE) {
@@ -1935,7 +1935,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 			($GLOBAL_VERBOSE) and appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo }.'$?'.qq{ "was the exit code for the submission of job $jname ..."}); # Causes the shell to print the above command's exit code (shell variable is $?) to STDOUT
 			if ($GLOBAL_VERBOSE && !$RUN_DIRECTLY_WITHOUT_TORQUE) {
 				my $submitText = ($RUN_DIRECTLY_WITHOUT_TORQUE) ? "directly ran (without TORQUE)" : "submitted to SGE";
-				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "[OK] we ${submitText} the job '${jname}' (Step: '$stepName' for sample '$sampleName') (after line $lnum of <$outfile>) -> result = \"\$${jidname}[2]\""\n\n}); # extra newlines to mark the end of this job
+				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "[OK] we ${submitText} the job '${jname}' (Step: '$stepName' for sample '$sampleName') (after line $lnum of <$outfile>) -> result = \"\$${jidname}\""\n\n}); # extra newlines to mark the end of this job
 			}
 			print OF $OUTPRINT;
 		}
