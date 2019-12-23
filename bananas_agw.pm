@@ -1919,7 +1919,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 			($GLOBAL_VERBOSE) and appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo ''});
 			if ($GLOBAL_VERBOSE && !$RUN_DIRECTLY_WITHOUT_TORQUE) {
 				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo '${jname} dependencies:' });
-				my @dependenciesArr = split(":", $remember{$REM_DEPENDENCIES_STR_COLON_DELIM}{$jname});
+				my @dependenciesArr = split(":", $remember{$REM_DEPENDENCIES_STR_COLON_DELIM}{$jidname});
 				foreach my $d (@dependenciesArr) {
 					$d =~ s/^[\$]//; # Remove the leading '$' from each variable so it doesn't get auto-evaluated when we $echo it
 					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "    * The dependency variable \"$d\" is => \"\$$d\" : Confirming that this is a real job with 'qstat -f -j \$$d' "}); # note that the 'd-with-dollar-sign' gets EVALUATED since it has a dollar sign. So this will print something like "Dependency result was: 5928.machine" and not the actual dependency name.
@@ -1935,7 +1935,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 			($GLOBAL_VERBOSE) and appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo }.'$?'.qq{ "was the exit code for the submission of job $jname ..."}); # Causes the shell to print the above command's exit code (shell variable is $?) to STDOUT
 			if ($GLOBAL_VERBOSE && !$RUN_DIRECTLY_WITHOUT_TORQUE) {
 				my $submitText = ($RUN_DIRECTLY_WITHOUT_TORQUE) ? "directly ran (without TORQUE)" : "submitted to SGE";
-				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "[OK] we ${submitText} the job '${jname}' (Step: '$stepName' for sample '$sampleName') (after line $lnum of <$outfile>) -> result = \"\$${jidname}\""\n\n}); # extra newlines to mark the end of this job
+				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "[OK] we ${submitText} the job '${jname}' (Step: '$stepName' for sample '$sampleName') (after line $lnum of <$outfile>) -> result = \"\$${jname}\""\n\n}); # extra newlines to mark the end of this job
 			}
 			print OF $OUTPRINT;
 		}
