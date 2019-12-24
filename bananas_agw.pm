@@ -1921,7 +1921,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 				my @dependenciesArr = split(":", $remember{$REM_DEPENDENCIES_STR_COLON_DELIM}{$jname});
 				foreach my $d (@dependenciesArr) {
 					$d =~ s/^[\$]//; # Remove the leading '$' from each variable so it doesn't get auto-evaluated when we $echo it
-					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "    * The dependency variable \"$d\" is => `\$(echo '\$$d' | awk '{print \$3}')` : Confirming that this is a real job with 'qstat -f -j `\$(echo '\$$d' | awk '{print \$3}')`' "}); # note that the 'd-with-dollar-sign' gets EVALUATED since it has a dollar sign. So this will print something like "Dependency result was: 5928.machine" and not the actual dependency name.
+					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "    * The dependency variable \"$d\" is => `\$(echo \$$d | awk '{print \$3}')` : Confirming that this is a real job with 'qstat -f -j `\$(echo \$$d | awk '{print \$3}')`' "}); # note that the 'd-with-dollar-sign' gets EVALUATED since it has a dollar sign. So this will print something like "Dependency result was: 5928.machine" and not the actual dependency name.
 					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{qstat -j \$(echo '\$$d' | awk '{print \$3}') > /dev/null });
 					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "         * 'qstat' result: \$? (should be 0)"});
 				}
