@@ -1045,10 +1045,10 @@ sub checkConfig {
 sub sanitizeAndCheckJobName($) {
 	my ($jobName) = @_;
 	my $MAX_JOB_NAME_LENGTH = 220; # "The job name is up to and including 236 characters in length": PBS Pro documentation at http://www.pbsworks.com/pdfs/PBSProgramGuide13.0.pdf
-	$jobName =~ `tr/\./\_/ | awk '{print \$3}'`; # replace any periods (such as those in the 'jobSample' (like "KO.1" or "Wildtype.2") by SINGLE underscores.
+	$jobName =~ tr/\./\_/ | awk '{print \$3}'; # replace any periods (such as those in the 'jobSample' (like "KO.1" or "Wildtype.2") by SINGLE underscores.
 	($jobName =~ m/${SAFE_JOB_NAME_REGEXP}/) or confess "[ERROR] The job name must only contain 'normal' alphanumeric characters (and no spaces, hyphens, or periods)--yours had unusual characters in it (somewhere in this job name -->  $jobName   )";
 	(length($jobName) <= $MAX_JOB_NAME_LENGTH) or confess "[ERROR] The job name is TOO LONG, probably because your study name is really long. The offending name was " . length($jobName) . " characters, whereas the maximum is $MAX_JOB_NAME_LENGTH . Here is the offending name: $jobName";
-	return $jobName;
+    return $jobName;
 }
 
 sub setJobInfo {
@@ -1914,12 +1914,12 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 		foreach my $sampleName (sort keys %{$cfg->{jobs}->{$stepName}} ) {
 			my $qcmd  = $cfg->{jobs}->{$stepName}->{$sampleName}->{qsub};
 			my $jname = $cfg->{jobs}->{$stepName}->{$sampleName}->{jobName};
-			#my $jidname = `echo $jname | awk '{print \$3}'`;
+			my $jidname = $jname =~ `awk '{print \$3}'`;
 			my $OUTPRINT = '';
 			($GLOBAL_VERBOSE) and appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo ''});
 			if ($GLOBAL_VERBOSE && !$RUN_DIRECTLY_WITHOUT_TORQUE) {
-				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo '${jname} dependencies:' });
-				my @dependenciesArr = split(":", $remember{$REM_DEPENDENCIES_STR_COLON_DELIM}{$jname});
+				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo '${jidname} dependencies:' });
+				my @dependenciesArr = split(":", $remember{$REM_DEPENDENCIES_STR_COLON_DELIM}{$jidname});
 				foreach my $d (@dependenciesArr) {
 					$d =~ s/^[\$]//; # Remove the leading '$' from each variable so it doesn't get auto-evaluated when we $echo it
 					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "    * The dependency variable \"$d\" is => \"\$$d\" : Confirming that this is a real job with 'qstat -f -j \$$d' "}); # note that the 'd-with-dollar-sign' gets EVALUATED since it has a dollar sign. So this will print something like "Dependency result was: 5928.machine" and not the actual dependency name.
@@ -1935,7 +1935,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 			($GLOBAL_VERBOSE) and appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo }.'$?'.qq{ "was the exit code for the submission of job $jname ..."}); # Causes the shell to print the above command's exit code (shell variable is $?) to STDOUT
 			if ($GLOBAL_VERBOSE && !$RUN_DIRECTLY_WITHOUT_TORQUE) {
 				my $submitText = ($RUN_DIRECTLY_WITHOUT_TORQUE) ? "directly ran (without TORQUE)" : "submitted to SGE";
-				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "[OK] we ${submitText} the job '${jname}' (Step: '$stepName' for sample '$sampleName') (after line $lnum of <$outfile>) -> result = \"\$${jname}\""\n\n}); # extra newlines to mark the end of this job
+				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "[OK] we ${submitText} the job '${jname}' (Step: '$stepName' for sample '$sampleName') (after line $lnum of <$outfile>) -> result = \"\$${jidname}\""\n\n}); # extra newlines to mark the end of this job
 			}
 			print OF $OUTPRINT;
 		}
