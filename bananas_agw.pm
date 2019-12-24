@@ -1045,7 +1045,7 @@ sub checkConfig {
 sub sanitizeAndCheckJobName($) {
 	my ($jobName) = @_;
 	my $MAX_JOB_NAME_LENGTH = 220; # "The job name is up to and including 236 characters in length": PBS Pro documentation at http://www.pbsworks.com/pdfs/PBSProgramGuide13.0.pdf
-	$jobName =~ tr/\./\_/ | awk '{print \$3}'; # replace any periods (such as those in the 'jobSample' (like "KO.1" or "Wildtype.2") by SINGLE underscores.
+	$jobName =~ tr/\./\_/; # replace any periods (such as those in the 'jobSample' (like "KO.1" or "Wildtype.2") by SINGLE underscores.
 	($jobName =~ m/${SAFE_JOB_NAME_REGEXP}/) or confess "[ERROR] The job name must only contain 'normal' alphanumeric characters (and no spaces, hyphens, or periods)--yours had unusual characters in it (somewhere in this job name -->  $jobName   )";
 	(length($jobName) <= $MAX_JOB_NAME_LENGTH) or confess "[ERROR] The job name is TOO LONG, probably because your study name is really long. The offending name was " . length($jobName) . " characters, whereas the maximum is $MAX_JOB_NAME_LENGTH . Here is the offending name: $jobName";
     return $jobName;
