@@ -1962,7 +1962,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 	verboseSystem("chmod 711 $outfile"); # Allow the job-submission script to be executed by this user. We do this even in a dry run.
 	my $result = verboseSystem("./$outfile");
 	(0 == $result) or confess "[ERROR] in attempting to run the ./$outfile script! Exit code was '$result'. "; # <== This actually RUNS the jobs
-	(!$GLOBAL_DRY_RUN && !$RUN_DIRECTLY_WITHOUT_TORQUE) && verboseOkPrint("Here are the first few jobs of yours (command is: qstat -u -w $ENV{USER}):\n" . `sleep 2; qstat -a -w -u \"$ENV{USER}\" | head -n 15` . "\n (Full job names available by running 'qstats' instead of 'qstat')...\n");
+	(!$GLOBAL_DRY_RUN && !$RUN_DIRECTLY_WITHOUT_TORQUE) && verboseOkPrint("Here are the first few jobs of yours (command is: qstat -u $ENV{USER}):\n" . `sleep 2; qstat -u \"$ENV{USER}\" | head -n 15` . "\n (Full job names available by running 'qstat -f -u $ENV{USER}' instead of 'qstat')...\n");
 }
 
 1;	 # <== Perl requires any module to end with a true value. Hence, this 1.
