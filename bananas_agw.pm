@@ -1091,7 +1091,7 @@ sub setJobInfo {
 
     my $scriptFullPath = catfile($theBinDir,$script);
     validateScriptOrDie($scriptFullPath, $cfg);
-    my $depStr = ($dependencies ne "") ? "-hold_jid \$(echo $dependencies | awk '{print $3}')" : ""; # Note that if $dependencies is non-blank, it will always begin with a ":"
+    my $depStr = ($dependencies ne "") ? "-hold_jid \$(echo $dependencies | awk '{print \$3}')" : ""; # Note that if $dependencies is non-blank, it will always begin with a ":"
     my $qsubCmd;
     if ($RUN_DIRECTLY_WITHOUT_TORQUE) { $qsubCmd = "${expvars}${scriptFullPath}"; } # <== note the literal backtick! There will be a matching one later. Also: the saving-to-shell-variables part is SPACE-SENSITIVE, so DO NOT add spaces here whatever you do.
     else {                              $qsubCmd = "${expvars}${jobFullName}=`" . get_qsub_cmd($cfg, $vars) . " -V -N ${jobFullName} ${depStr} ${variables} ${scriptFullPath}`"; } # <== note the literal backtick! There will be a matching one later. Also: the saving-to-shell-variables part is SPACE-SENSITIVE, so DO NOT add spaces here whatever you do.
