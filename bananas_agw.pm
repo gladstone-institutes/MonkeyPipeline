@@ -1913,7 +1913,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 	foreach my $stepName (sort keys(%{$cfg->{jobs}})) { # <== it is CRITICALLY IMPORTANT that the jobs are added to the script in sorted order!
 		foreach my $sampleName (sort keys %{$cfg->{jobs}->{$stepName}} ) {
 			my $qcmd  = $cfg->{jobs}->{$stepName}->{$sampleName}->{qsub};
-			my $jname = $cfg->{jobs}->{$stepName}->{$sampleName}->{jobName};
+			my $jname = $cfg->{jobs}->{$stepName}->{$sampleName}->{jobName} =~ `| awk '{print \$3}'`;
 			my $OUTPRINT = '';
 			($GLOBAL_VERBOSE) and appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo ''});
 			if ($GLOBAL_VERBOSE && !$RUN_DIRECTLY_WITHOUT_TORQUE) {
