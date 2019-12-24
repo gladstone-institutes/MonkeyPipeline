@@ -1914,12 +1914,12 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 		foreach my $sampleName (sort keys %{$cfg->{jobs}->{$stepName}} ) {
 			my $qcmd  = $cfg->{jobs}->{$stepName}->{$sampleName}->{qsub};
 			my $jname = $cfg->{jobs}->{$stepName}->{$sampleName}->{jobName};
-			my $jidname = `echo jobName | awk '{print \$3}'`;
+			my $jidname = `echo $jname | awk '{print \$3}'`;
 			my $OUTPRINT = '';
 			($GLOBAL_VERBOSE) and appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo ''});
 			if ($GLOBAL_VERBOSE && !$RUN_DIRECTLY_WITHOUT_TORQUE) {
 				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo '${jidname} dependencies:' });
-				my @dependenciesArr = split(":", $remember{$REM_DEPENDENCIES_STR_COLON_DELIM}{$jidname});
+				my @dependenciesArr = split(":", $remember{$REM_DEPENDENCIES_STR_COLON_DELIM}{$jname});
 				foreach my $d (@dependenciesArr) {
 					$d =~ s/^[\$]//; # Remove the leading '$' from each variable so it doesn't get auto-evaluated when we $echo it
 					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "    * The dependency variable \"$d\" is => \"\$$d\" : Confirming that this is a real job with 'qstat -f -j \$$d' "}); # note that the 'd-with-dollar-sign' gets EVALUATED since it has a dollar sign. So this will print something like "Dependency result was: 5928.machine" and not the actual dependency name.
