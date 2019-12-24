@@ -1913,11 +1913,12 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 	foreach my $stepName (sort keys(%{$cfg->{jobs}})) { # <== it is CRITICALLY IMPORTANT that the jobs are added to the script in sorted order!
 		foreach my $sampleName (sort keys %{$cfg->{jobs}->{$stepName}} ) {
 			my $qcmd  = $cfg->{jobs}->{$stepName}->{$sampleName}->{qsub};
-			my $jname = $cfg->{jobs}->{$stepName}->{$sampleName}->{jobName}->{`| awk '{print \$3}'`};
+			my $jname = $cfg->{jobs}->{$stepName}->{$sampleName}->{jobName};
+			my $jidname = `echo $jname | awk '{print \$3}'`;
 			my $OUTPRINT = '';
 			($GLOBAL_VERBOSE) and appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo ''});
 			if ($GLOBAL_VERBOSE && !$RUN_DIRECTLY_WITHOUT_TORQUE) {
-				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo '${jname} dependencies:' });
+				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo '${jidname} dependencies:' });
 				my @dependenciesArr = split(":", $remember{$REM_DEPENDENCIES_STR_COLON_DELIM}{$jname});
 				foreach my $d (@dependenciesArr) {
 					$d =~ s/^[\$]//; # Remove the leading '$' from each variable so it doesn't get auto-evaluated when we $echo it
@@ -1934,7 +1935,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 			($GLOBAL_VERBOSE) and appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo }.'$?'.qq{ "was the exit code for the submission of job $jname ..."}); # Causes the shell to print the above command's exit code (shell variable is $?) to STDOUT
 			if ($GLOBAL_VERBOSE && !$RUN_DIRECTLY_WITHOUT_TORQUE) {
 				my $submitText = ($RUN_DIRECTLY_WITHOUT_TORQUE) ? "directly ran (without TORQUE)" : "submitted to SGE";
-				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "[OK] we ${submitText} the job '${jname}' (Step: '$stepName' for sample '$sampleName') (after line $lnum of <$outfile>) -> result = \"\$${jname}\""\n\n}); # extra newlines to mark the end of this job
+				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "[OK] we ${submitText} the job '${jname}' (Step: '$stepName' for sample '$sampleName') (after line $lnum of <$outfile>) -> result = \"\$${jidname}\""\n\n}); # extra newlines to mark the end of this job
 			}
 			print OF $OUTPRINT;
 		}
