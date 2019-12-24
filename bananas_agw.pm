@@ -1075,6 +1075,7 @@ sub setJobInfo {
 	    $dependencies .= ':' . '$' . $dval; # note the LITERAL DOLLAR SIGN, which makes this dependency into a shell variable name (yes, really, that is how they are stored).
     }
     $dependencies =~ s/^[:]//; # Remove any extraneous leading colon, if there is one.
+	$dependencies =~ `awk '{print \$3}'`;
     # ============ SET QSUB VARIABLES with -v ==================
     my $variables = "-v bananas='${BANANAS_VERSION}'"; # "-v" option supplies the variable list. Note that there is ALWAYS at least one variable (the bananas version)
     my $expvars = "";
