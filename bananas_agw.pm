@@ -1913,7 +1913,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 	foreach my $stepName (sort keys(%{$cfg->{jobs}})) { # <== it is CRITICALLY IMPORTANT that the jobs are added to the script in sorted order!
 		foreach my $sampleName (sort keys %{$cfg->{jobs}->{$stepName}} ) {
 			my $qcmd  = $cfg->{jobs}->{$stepName}->{$sampleName}->{qsub};
-			my $jname = $cfg->{jobs}->{$stepName}->{$sampleName}->{jobName} =~ `| awk '{print \$3}'`;
+			my $jname = $cfg->{jobs}->{$stepName}->{$sampleName}->{jobName};
 			my $OUTPRINT = '';
 			($GLOBAL_VERBOSE) and appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo ''});
 			if ($GLOBAL_VERBOSE && !$RUN_DIRECTLY_WITHOUT_TORQUE) {
@@ -1921,7 +1921,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 				my @dependenciesArr = split(":", $remember{$REM_DEPENDENCIES_STR_COLON_DELIM}{$jname});
 				foreach my $d (@dependenciesArr) {
 					$d =~ s/^[\$]//; # Remove the leading '$' from each variable so it doesn't get auto-evaluated when we $echo it
-					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "    * The dependency variable \"$d\" is => \"\$$d\" : Confirming that this is a real job with 'qstat -f -j \$$d' "}); # note that the 'd-with-dollar-sign' gets EVALUATED since it has a dollar sign. So this will print something like "Dependency result was: 5928.machine" and not the actual dependency name.
+					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "    * The dependency variable \"$d\" is => \"\$(echo '\$$d' | awk '{print \$3}')\" : Confirming that this is a real job with 'qstat -f -j \$(echo '\$$d' | awk '{print \$3}')' "}); # note that the 'd-with-dollar-sign' gets EVALUATED since it has a dollar sign. So this will print something like "Dependency result was: 5928.machine" and not the actual dependency name.
 					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{qstat -j \$(echo '\$$d' | awk '{print \$3}') > /dev/null });
 					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "         * 'qstat' result: \$? (should be 0)"});
 				}
