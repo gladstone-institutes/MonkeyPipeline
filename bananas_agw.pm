@@ -1918,7 +1918,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 			my $OUTPRINT = '';
 			($GLOBAL_VERBOSE) and appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo ''});
 			if ($GLOBAL_VERBOSE && !$RUN_DIRECTLY_WITHOUT_TORQUE) {
-				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo '${jname} dependencies:' });
+				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo '${jidname} dependencies:' });
 				my @dependenciesArr = split(":", $remember{$REM_DEPENDENCIES_STR_COLON_DELIM}{$jidname});
 				foreach my $d (@dependenciesArr) {
 					$d =~ s/^[\$]//; # Remove the leading '$' from each variable so it doesn't get auto-evaluated when we $echo it
