@@ -1914,7 +1914,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 		foreach my $sampleName (sort keys %{$cfg->{jobs}->{$stepName}} ) {
 			my $qcmd  = $cfg->{jobs}->{$stepName}->{$sampleName}->{qsub};
 			my $jname = $cfg->{jobs}->{$stepName}->{$sampleName}->{jobName};
-			my $jidname = `"echo "$jname" |awk '{print \$3}'"`;
+			my $jidname = "echo "$jname" |awk '{print \$3}'";
 			my $OUTPRINT = '';
 			($GLOBAL_VERBOSE) and appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo ''});
 			if ($GLOBAL_VERBOSE && !$RUN_DIRECTLY_WITHOUT_TORQUE) {
