@@ -1942,7 +1942,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 
 	if ($HOLD_UNTIL_ALL_JOBS_SUBMITTED) {
 		my $FOOTER = '';  # It is crucial to RELEASE the blocking-everything job (with 'qrls')!
-		appendLinesInPlaceNL(\$lnum, \$FOOTER, getBinPath($cfg, "qrls") . ' $' . "\$(echo ${SIGNAL_TO_START_VARNAME} | awk '{print \$3}'"); # <== run everything, by running the 'start signal' variable that all other jobs depend on (i.e. stop holding the job)
+		appendLinesInPlaceNL(\$lnum, \$FOOTER, getBinPath($cfg, "qrls") . " \$(echo \$${SIGNAL_TO_START_VARNAME} | awk '{print \$3}'"); # <== run everything, by running the 'start signal' variable that all other jobs depend on (i.e. stop holding the job)
 		print OF $FOOTER;
 	}
 	close(OF);
