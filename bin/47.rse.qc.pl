@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/bin/perl
 
 # Max walltime is 336 hours (14 days)! Jobs requesting more are auto-rejected.
 

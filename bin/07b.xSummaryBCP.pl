@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/bin/perl -w
 # This runs after BCP had done its thing, and summarizes a bunch of files. (See "Percent tags in peaks" below)
 use strict; use warnings; use Carp; # Carp = "confess" function
 use File::Spec::Functions qw(catfile);   use Data::Dumper;   use File::Basename;

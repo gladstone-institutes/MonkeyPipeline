@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/bin/perl -w
 my $syslog = "X.04.mapping.syslog.txt";
 
 use strict; use warnings; use Carp; # Carp = "confess" function

@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/bin/perl
 
 my $syslog = "X.02.filter.syslog.txt";
 

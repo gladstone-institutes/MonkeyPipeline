@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/bin/perl
 
 # DESCRIPTION: This script runs FastQC for doing quality control on input files
 #              (can be both .fq files and .bam files, depending on the input arguments).

@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/bin/perl
 
 use strict; use warnings; use Carp; # Carp = "confess" function
 use File::Spec::Functions qw(catfile);   use Data::Dumper;   use File::Basename;

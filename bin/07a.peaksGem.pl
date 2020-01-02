@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/bin/perl
 
 my $syslog = "X.07.gemPeaks.syslog.txt";
 

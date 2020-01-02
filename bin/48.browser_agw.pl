@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/bin/perl
 
 # Note: this file generates the non-binned (traditional) wiggle/bam tracks only.
 # If you are looking for SEAN THOMAS's binned browser tracks (primarily intended for ChIP-seq), then check "08.browser.pl"
