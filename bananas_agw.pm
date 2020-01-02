@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/bin/perl
 # bananas.pm version 2 - parallelized for rigel
 # Authors: Sean Thomas and Alex Williams, 2013
 # This program is designed to automate many of the tasks that accompany next generation sequencing tasks. 
@@ -1091,10 +1091,11 @@ sub setJobInfo {
 
     my $scriptFullPath = catfile($theBinDir,$script);
     validateScriptOrDie($scriptFullPath, $cfg);
-    my $depStr = ($dependencies ne "") ? "-hold_jid \$(echo $dependencies | awk '{print \$3}')" : ""; # Note that if $dependencies is non-blank, it will always begin with a ":"
+    my $depStr = ($dependencies ne "") ? "-hold_jid $dependencies" : ""; # Note that if $dependencies is non-blank, it will always begin with a ":"
+#    my $depStr = ($dependencies ne "") ? "-hold_jid \$(echo $dependencies | awk '{print \$3}')" : ""; # Note that if $dependencies is non-blank, it will always begin with a ":"
     my $qsubCmd;
     if ($RUN_DIRECTLY_WITHOUT_TORQUE) { $qsubCmd = "${expvars}${scriptFullPath}"; } # <== note the literal backtick! There will be a matching one later. Also: the saving-to-shell-variables part is SPACE-SENSITIVE, so DO NOT add spaces here whatever you do.
-    else {                              $qsubCmd = "${expvars}${jobFullName}=`" . get_qsub_cmd($cfg, $vars) . " -V -N ${jobFullName} ${depStr} ${variables} ${scriptFullPath}`"; } # <== note the literal backtick! There will be a matching one later. Also: the saving-to-shell-variables part is SPACE-SENSITIVE, so DO NOT add spaces here whatever you do.
+    else {                              $qsubCmd = "${expvars}${jobFullName}=`" . get_qsub_cmd($cfg, $vars) . "-terse -V -N ${jobFullName} ${depStr} ${variables} ${scriptFullPath}`"; } # <== note the literal backtick! There will be a matching one later. Also: the saving-to-shell-variables part is SPACE-SENSITIVE, so DO NOT add spaces here whatever you do.
     $globalNumJobsSubmitted++;
     debugPrint("[DEBUG] Adding job ${globalNumJobsSubmitted} via qsub: $qsubCmd\n", "cyan");
     (!exists($cfg->{jobs}->{$jobWithoutStudyName}->{$jobSample})) or confess "bananas.pm [ERROR]: Trying to add a job that ALREADY EXISTS! Can't double-add a job with the same name AND sub-sample name! The illegal combination of job name / sample name was: \"$jobWithoutStudyName\" (job) and \"$jobSample\" (sample).";
@@ -1921,8 +1922,10 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 				my @dependenciesArr = split(":", $remember{$REM_DEPENDENCIES_STR_COLON_DELIM}{$jname});
 				foreach my $d (@dependenciesArr) {
 					$d =~ s/^[\$]//; # Remove the leading '$' from each variable so it doesn't get auto-evaluated when we $echo it
-					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "    * The dependency variable \"$d\" is => \$(echo \$$d | awk '{print \$3}') : Confirming that this is a real job with 'qstat -f -j \$(echo \$$d | awk '{print \$3}')' "}); # note that the 'd-with-dollar-sign' gets EVALUATED since it has a dollar sign. So this will print something like "Dependency result was: 5928.machine" and not the actual dependency name.
-					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{qstat -j \$(echo \$$d | awk '{print \$3}') > /dev/null });
+					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "    * The dependency variable \"$d\" is => \$$d) : Confirming that this is a real job with 'qstat -f -j \$$d' "}); # note that the 'd-with-dollar-sign' gets EVALUATED since it has a dollar sign. So this will print something like "Dependency result was: 5928.machine" and not the actual dependency name.
+#					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "    * The dependency variable \"$d\" is => \$(echo \$$d | awk '{print \$3}') : Confirming that this is a real job with 'qstat -f -j \$(echo \$$d | awk '{print \$3}')' "}); # note that the 'd-with-dollar-sign' gets EVALUATED since it has a dollar sign. So this will print something like "Dependency result was: 5928.machine" and not the actual dependency name.
+					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{qstat -j \$$d > /dev/null });
+#					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{qstat -j \$(echo \$$d | awk '{print \$3}') > /dev/null });
 					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "         * 'qstat' result: \$? (should be 0)"});
 				}
 			}
@@ -1942,7 +1945,7 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 
 	if ($HOLD_UNTIL_ALL_JOBS_SUBMITTED) {
 		my $FOOTER = '';  # It is crucial to RELEASE the blocking-everything job (with 'qrls')!
-		appendLinesInPlaceNL(\$lnum, \$FOOTER, getBinPath($cfg, "qrls") . " \$(echo \$${SIGNAL_TO_START_VARNAME} | awk '{print \$3}')"); # <== run everything, by running the 'start signal' variable that all other jobs depend on (i.e. stop holding the job)
+		appendLinesInPlaceNL(\$lnum, \$FOOTER, getBinPath($cfg, "qrls") . " \$${SIGNAL_TO_START_VARNAME}"); # <== run everything, by running the 'start signal' variable that all other jobs depend on (i.e. stop holding the job)
 		print OF $FOOTER;
 	}
 	close(OF);
