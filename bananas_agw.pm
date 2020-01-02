@@ -1198,7 +1198,7 @@ sub buildJobSubmissionList {
 				   };
 			(-e catfile($vars->{'fastqDir'}, $vars->{'inputFile1'})) or confess("PROGRAMMING [ERROR] [buildJobSubmissionList in bananas_agw.pm]: The file <$vars->{fastqDir}/$vars->{'inputFile1'}> was expected to exist (since it was in the configuration file), but we did NOT find it on the filesystem!");
 			(!$isPaired) or (-e catfile($vars->{'fastqDir'}, $vars->{'inputFile2'})) or confess("PROGRAMMING [ERROR] [buildJobSubmissionList in bananas_agw.pm]: The file <$vars->{fastqDir}/$vars->{'inputFile2'}> was expected to exist (since it was in the configuration file), but we did NOT find it on the filesystem!");
-			setJobInfo($cfg, $STEP_FILTER, "${k}",$dep,$vars,$cfg->{monkeyPoo},"02.filter.pl");
+			setJobInfo($cfg, $STEP_FILTER, "${k}",$dep,$vars,$cfg->{monkeyPoo},"perl 02.filter.pl");
 		}
 	}
 	writeup($cfg, qq{Trimming of known adapters and low-quality regions of reads was performed using Fastq-mcf [CITE_MCF].}, {"CITE_MCF"=>qq{Fastq-mcf (in EA-utils): Erik Aronesty (2011). "EA-Utils: Command-line tools for processing biological sequencing data"; http://code.google.com/p/ea-utils}});
