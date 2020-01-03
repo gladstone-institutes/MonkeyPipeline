@@ -1075,7 +1075,7 @@ sub setJobInfo {
 	    (defined($dval) && ("" ne $dval)) or confess "[ERROR making qsub jobs]: The dependency for job '$jobFullName',\n...specifically in step '$dkey', was undefined!\n...This probably indicates an error in the dependency names (something like 'step2' instead of 'step02' for example)!";
 	    ($jobFullName ne $dval)            or confess "[ERROR making qsub jobs]: You set the job name ($jobFullName) to THE SAME NAME as one of its prerequisites! This is not valid--a job cannot depend on itself. Fix it! ";
 	    (exists($remember{$REM_ALL_JOBS}->{ $dval }) && defined($remember{$REM_ALL_JOBS}{$dval})) or confess "[ERROR] A dependency was added to '$dval', but that does NOT appear to have been a valid job name that had been previously added!";
-	    $dependencies .= ':' . '$' . $dval; # note the LITERAL DOLLAR SIGN, which makes this dependency into a shell variable name (yes, really, that is how they are stored).
+	    $dependencies .= ',' . '$' . $dval; # note the LITERAL DOLLAR SIGN, which makes this dependency into a shell variable name (yes, really, that is how they are stored).
     }
     $dependencies =~ s/^[:]//; # Remove any extraneous leading colon, if there is one.
     # ============ SET QSUB VARIABLES with -v ==================
