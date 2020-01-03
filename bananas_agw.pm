@@ -1905,6 +1905,8 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 	appendLinesInPlaceNL(\$lnum, \$OUT_HEADER_PRINT, "set -u           # <= abort on undefined variables");
 	appendLinesInPlaceNL(\$lnum, \$OUT_HEADER_PRINT, "set -o pipefail  # <= show failed exit codes properly");
 	appendLinesInPlaceNL(\$lnum, \$OUT_HEADER_PRINT, "export SHELL=/bin/bash"); # Make sure to use the BASH shell, not just plain '/bin/sh'!
+	appendLinesInPlaceNL(\$lnum, \$OUT_HEADER_PRINT, "export SGE_STDERR_PATH=/wynton/group/gladstone/biocore/output/");
+	appendLinesInPlaceNL(\$lnum, \$OUT_HEADER_PRINT, "export SGE_STDOUT_PATH=/wynton/group/gladstone/biocore/output/");
 
 	if ($HOLD_UNTIL_ALL_JOBS_SUBMITTED && !$RUN_DIRECTLY_WITHOUT_TORQUE) {
 		my $WALLTIME_FOR_WAIT_JOBS = "300"; # these really only take like 1 second to run
