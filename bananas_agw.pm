@@ -1,4 +1,7 @@
 #!/bin/perl
+eval 'exec /bin/perl -w -S $0 ${1+"$@"}'
+if 0; # not running under some shell
+
 # bananas.pm version 2 - parallelized for rigel
 # Authors: Sean Thomas and Alex Williams, 2013
 # This program is designed to automate many of the tasks that accompany next generation sequencing tasks. 
@@ -1102,7 +1105,7 @@ sub setJobInfo {
     $cfg->{jobs}->{$jobWithoutStudyName}->{$jobSample} = { "jobName"=>$jobFullName, "qsub"=>$qsubCmd }; # <== '49' so it gets alphabetized after all ALIGNMENT is done, guaranteed. Jobs are done in alphabetical order.
     (!exists($remember{$REM_ALL_JOBS}{$jobFullName})) or confess "bananas.pm [ERROR]: more than one job had the name '$jobFullName'---this is a PROGRAMMING ERROR that needs to be fixed...";
     $remember{$REM_ALL_JOBS}{$jobFullName} = 1; # Remember that we have seen this job! Used for error checking the dependencies.
-    $remember{$REM_DEPENDENCIES_STR_COLON_DELIM}{$jobFullName} = $dependencies; # Remember the dependency string. Looks like "dep1:dep2". Can be blank.
+    $remember{$REM_DEPENDENCIES_STR_COLON_DELIM}{$jobFullName} = $dependencies; # Remember the dependency string. Looks like "dep1,dep2". Can be blank.
     return($jobFullName, $qsubCmd); # <== this info is used by a few things later
 }
 
@@ -1919,13 +1922,12 @@ sub runJobs {	      # Generate AND RUN the qsub "list of jobs to submit" file.
 			($GLOBAL_VERBOSE) and appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo ''});
 			if ($GLOBAL_VERBOSE && !$RUN_DIRECTLY_WITHOUT_TORQUE) {
 				appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo '${jname} dependencies:' });
-				my @dependenciesArr = split(":", $remember{$REM_DEPENDENCIES_STR_COLON_DELIM}{$jname});
+				my @dependenciesArr = split(",", $remember{$REM_DEPENDENCIES_STR_COLON_DELIM}{$jname});
 				foreach my $d (@dependenciesArr) {
 					$d =~ s/^[\$]//; # Remove the leading '$' from each variable so it doesn't get auto-evaluated when we $echo it
 					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "    * The dependency variable \"$d\" is => \$$d) : Confirming that this is a real job with 'qstat -f -j \$$d' "}); # note that the 'd-with-dollar-sign' gets EVALUATED since it has a dollar sign. So this will print something like "Dependency result was: 5928.machine" and not the actual dependency name.
-#					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "    * The dependency variable \"$d\" is => \$(echo \$$d | awk '{print \$3}') : Confirming that this is a real job with 'qstat -f -j \$(echo \$$d | awk '{print \$3}')' "}); # note that the 'd-with-dollar-sign' gets EVALUATED since it has a dollar sign. So this will print something like "Dependency result was: 5928.machine" and not the actual dependency name.
 					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{qstat -j \$$d > /dev/null });
-#					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{qstat -j \$(echo \$$d | awk '{print \$3}') > /dev/null });
+
 					appendLinesInPlaceNL(\$lnum, \$OUTPRINT, qq{echo "         * 'qstat' result: \$? (should be 0)"});
 				}
 			}

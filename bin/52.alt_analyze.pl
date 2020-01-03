@@ -1,4 +1,6 @@
 #!/bin/perl -w
+eval 'exec /bin/perl -w -S $0 ${1+"$@"}'
+if 0; # not running under some shell
 
 use strict; use warnings; use Carp; # Carp = "confess" function
 use File::Spec::Functions qw(catfile);   use Data::Dumper;   use File::Basename;

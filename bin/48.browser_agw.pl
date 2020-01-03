@@ -1,4 +1,6 @@
 #!/bin/perl
+eval 'exec /bin/perl -w -S $0 ${1+"$@"}'
+if 0; # not running under some shell
 
 # Note: this file generates the non-binned (traditional) wiggle/bam tracks only.
 # If you are looking for SEAN THOMAS's binned browser tracks (primarily intended for ChIP-seq), then check "08.browser.pl"

@@ -1,4 +1,7 @@
 #!/bin/perl -w
+eval 'exec /bin/perl -w -S $0 ${1+"$@"}'
+if 0; # not running under some shell
+
 my $syslog = "X.04.mapping.syslog.txt";
 
 use strict; use warnings; use Carp; # Carp = "confess" function

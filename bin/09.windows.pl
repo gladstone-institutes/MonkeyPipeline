@@ -1,4 +1,6 @@
 #!/bin/perl
+eval 'exec /bin/perl -w -S $0 ${1+"$@"}'
+if 0; # not running under some shell
 
 my $syslog = "X.09.windows.syslog.txt";
 
