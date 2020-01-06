@@ -11,7 +11,7 @@ require(data.table)
 require(gplots)
 require(monocle) # http://www.bioconductor.org/packages/release/bioc/vignettes/monocle/inst/doc/monocle-vignette.pdf
 require(reshape) # reshape for 'melt'
-#source("/data/home/alexgw/TimeForScience/Lab_Code/R/AGW/agwUtil.R"); # Has "pairs.agw" in it
+#source("/wynton/home/pollard/wmaguire/gladstone/biocore/references/agwUtil.R"); # Has "pairs.agw" in it
 options(error=recover)
 options(stringsAsFactors=FALSE)
 

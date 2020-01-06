@@ -1,6 +1,6 @@
 require(data.table); require(edgeR); require(gplots)
 require(methods) # <-- just in case we use RScript to run this
-#source("/data/home/alexgw/TimeForScience/Lab_Code/R/AGW/agwUtil.R"); # Has "pairs.agw" in it
+#source("/wynton/home/pollard/wmaguire/gladstone/biocore/references/agwUtil.R"); # Has "pairs.agw" in it
 #options(error=traceback) # useful even non-interactively
 #options(error=recover)
 options(stringsAsFactors=FALSE)

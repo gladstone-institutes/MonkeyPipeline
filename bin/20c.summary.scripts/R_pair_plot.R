@@ -1,5 +1,5 @@
 require(edgeR); require(gplots)
-source("/data/home/alexgw/TimeForScience/Lab_Code/R/AGW/agwUtil.R"); # Has "pairs.agw" in it
+source("/wynton/home/pollard/wmaguire/gladstone/biocore/references/agwUtil.R"); # Has "pairs.agw" in it
 
 SUBREAD_FILE <- "subread.featureCounts.counts.txt"
 OUT_PREFIX      <- "subread.norm.cpm.pairs"

@@ -51,7 +51,7 @@ my $N_BAM_LINES_TO_EXAMINE = $ENV{'nBamLines'}; # 250000; # If we aren't '$shoul
 
 # if RSEQC is installed, we also want to know gene body coverage, junction annotation, etc etc...
 # 'refBed' is a reference bed file downloaded from http://dldcc-web.brc.bcm.edu/lilab/liguow/CGI/rseqc/_build/html/#download-rseqc
-#my $refBed="/data/info/genome/rseqc_bed_files/mm9_NCBI37_Ensembl.bed";
+#my $refBed="/wynton/home/pollard/wmaguire/gladstone/biocore/references/mm9_NCBI37_Ensembl.bed";
 my $bamBase = basename($inputBAMFullPath);
 $bamBase  =~ s/[.][sb]am$//i;     # <-- remove the bam/sam suffix
 my $outpre = catfile($outd, $bamBase);
