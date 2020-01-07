@@ -505,6 +505,14 @@ sub validateScriptOrDie($$) { # Validate that a script exists. Intentionally doe
 		print STDERR "[OK - NOTE] svTools::lint is going to skip checking the '51b.summary.R' file. There is actually a bug in svLint that causes it to report the incorrect failure message: 'in grep(regex, attr(exprs, 'srcref')[[j]]) ... 'Missing ')''";
 		return;
 	}
+	if ($scriptPath =~ m/51c.cluster.R$/i) { # hard-coded check for this one file to skip
+		print STDERR "51c check skipped";
+		return;
+	}
+	if ($scriptPath =~ m/Rscript/i) { # hard-coded check for this one file to skip
+		print STDERR "Rscript check skipped";
+		return;
+	}
 
 	# ================ CHECK R SYNTAX. This is VERY ANNOYING in comparison to perl ================
 	if ($scriptPath =~ /[.](R|Rscript)$/i and (!$remember{$REM_SCRIPTS_CHECKED}{$scriptPath})) { # Is this an R script that we have NOT checked to make sure its syntax is OK? If so, check it.
