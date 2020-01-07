@@ -505,42 +505,38 @@ sub validateScriptOrDie($$) { # Validate that a script exists. Intentionally doe
 		print STDERR "[OK - NOTE] svTools::lint is going to skip checking the '51b.summary.R' file. There is actually a bug in svLint that causes it to report the incorrect failure message: 'in grep(regex, attr(exprs, 'srcref')[[j]]) ... 'Missing ')''";
 		return;
 	}
-	if ($scriptPath =~ m/51c.cluster.R$/i) { # hard-coded check for this one file to skip
-		print STDERR "51c check skipped";
-		return;
-	}
-	if ($scriptPath =~ m/Rscript/i) { # hard-coded check for this one file to skip
-		print STDERR "Rscript check skipped";
-		return;
-	}
 
 	# ================ CHECK R SYNTAX. This is VERY ANNOYING in comparison to perl ================
-	if ($scriptPath =~ /[.](R|Rscript)$/i and (!$remember{$REM_SCRIPTS_CHECKED}{$scriptPath})) { # Is this an R script that we have NOT checked to make sure its syntax is OK? If so, check it.
-		# Another thing that should be checked is: capabilities()["X11"] <== if this is FALSE, then no plots will works
-		my $R_CHECKER_CODE = <<"R_STUFF";
-# Below: this is R code in a perl HEREDOC
-if (!require("svTools")) {
-        print("You need to run install.packages('svTools') in R to allow syntax checking.");
-        quit(save="no", 2); # Exit code 2 will be used to mean 'svTools' is not installed
-} else {
-	lintOut  = svTools::lint(file="${scriptPath}"); # <== Note the PERL variable here, which gets expanded to the proper file name!
-	errFound = (is.data.frame(lintOut) && nrow(lintOut) > 0); # <== This is R code
-        if (errFound) { print("Problems found!"); print(lintOut); }
-        else          { quit(save="no", 0); } # exit code 0 = everything is OK
-}
-quit(save="no", 1); # <== exit with code #1 to indicate that improper syntax was detected by svTools
-R_STUFF
-		my $R_CHECKER_TEMPFILE = "tmp.R_checker_code.tmp";
-		open(RC, ">$R_CHECKER_TEMPFILE") or confess("[ERROR] Couldn't make a temporary R file in this directory! Tried to write (unsuccessfully) to the following file: $R_CHECKER_TEMPFILE");
-		print RC $R_CHECKER_CODE;
-		close(RC);
-		my $rverb    = ($GLOBAL_VERBOSE) ? " --quiet --vanilla " : " --quiet --vanilla --slave "; # --slave is for background tasks and means "don't echo R commands" (even less verbose than 'quiet')
-		my $exitCode = verboseSystem(getBinPath($cfgPtr, "R_EXE") . qq{ $rverb < $R_CHECKER_TEMPFILE});
-		($exitCode == 1) and confess("[ERROR] The R file '${scriptPath}' had a syntax error as detected by svTools::lint. Source the file yourself to find the error.");
-		($exitCode == 2) and confess("[ERROR] The R syntax code checker requires that 'svTools' is installed. This probably means you do not have your R_LIBS set up properly. If you are POSITIVE you have it set up properly, you should run install.packages('svTools') (possibly as root) from within R in order to install the useful syntax checker package.");
-		($exitCode != 0) and confess("[ERROR] The R syntax code checker found a syntax error in the script '${scriptPath}' Exit code was $exitCode.");
-		unlink($R_CHECKER_TEMPFILE) or warn("[WARNING] Weirdly, we could not delete the R temp file ($R_CHECKER_TEMPFILE) that we made...");
+	if ($scriptPath =~ /[.](R|Rscript)$/i and (!$remember{$REM_SCRIPTS_CHECKED}{$scriptPath}))      {
+		print STDERR "Skipping R checks";
+		return;
 	}
+#	{ # Is this an R script that we have NOT checked to make sure its syntax is OK? If so, check it.
+#		# Another thing that should be checked is: capabilities()["X11"] <== if this is FALSE, then no plots will works
+#		my $R_CHECKER_CODE = <<"R_STUFF";
+## Below: this is R code in a perl HEREDOC
+#if (!require("svTools")) {
+#        print("You need to run install.packages('svTools') in R to allow syntax checking.");
+#        quit(save="no", 2); # Exit code 2 will be used to mean 'svTools' is not installed
+#} else {
+#	lintOut  = svTools::lint(file="${scriptPath}"); # <== Note the PERL variable here, which gets expanded to the proper file name!
+#	errFound = (is.data.frame(lintOut) && nrow(lintOut) > 0); # <== This is R code
+#        if (errFound) { print("Problems found!"); print(lintOut); }
+#        else          { quit(save="no", 0); } # exit code 0 = everything is OK
+#}
+#quit(save="no", 1); # <== exit with code #1 to indicate that improper syntax was detected by svTools
+#R_STUFF
+#		my $R_CHECKER_TEMPFILE = "tmp.R_checker_code.tmp";
+#		open(RC, ">$R_CHECKER_TEMPFILE") or confess("[ERROR] Couldn't make a temporary R file in this directory! Tried to write (unsuccessfully) to the following file: $R_CHECKER_TEMPFILE");
+#		print RC $R_CHECKER_CODE;
+#		close(RC);
+#		my $rverb    = ($GLOBAL_VERBOSE) ? " --quiet --vanilla " : " --quiet --vanilla --slave "; # --slave is for background tasks and means "don't echo R commands" (even less verbose than 'quiet')
+#		my $exitCode = verboseSystem(getBinPath($cfgPtr, "R_EXE") . qq{ $rverb < $R_CHECKER_TEMPFILE});
+#		($exitCode == 1) and confess("[ERROR] The R file '${scriptPath}' had a syntax error as detected by svTools::lint. Source the file yourself to find the error.");
+#		($exitCode == 2) and confess("[ERROR] The R syntax code checker requires that 'svTools' is installed. This probably means you do not have your R_LIBS set up properly. If you are POSITIVE you have it set up properly, you should run install.packages('svTools') (possibly as root) from within R in order to install the useful syntax checker package.");
+#		($exitCode != 0) and confess("[ERROR] The R syntax code checker found a syntax error in the script '${scriptPath}' Exit code was $exitCode.");
+#		unlink($R_CHECKER_TEMPFILE) or warn("[WARNING] Weirdly, we could not delete the R temp file ($R_CHECKER_TEMPFILE) that we made...");
+#	}
 	# ================ DONE CHECKING R SYNTAX. ================
 }
 
