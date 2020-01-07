@@ -1758,7 +1758,7 @@ sub buildJobSubmissionList {
 				, {"CITE_MONO"=>qq{Monocle: Trapnell C, Cacchiarelli D, Grimsby J, Pokharel P, Li S, Morse M, Lennon NJ, Livak KJ, Mikkelsen TS, and Rinn JL. "The dynamics and regulators of cell fate decisions are revealed by pseudo-temporal ordering of single cells." Nature Biotechnology (2014).} } );
 		}
 		setJobInfo($cfg, $STEP_SUMMARY_AFTER_EDGER, "all", $dep,$vars,$cfg->{monkeyPoo}, "51b.summary.R");
-		setJobInfo($cfg, $STEP_CLUSTER_AFTER_EDGER, "all", "Rscript", $dep,$vars,$cfg->{monkeyPoo}, "51c.cluster.R"); # output goes into the summaryFigureDir
+		setJobInfo($cfg, $STEP_CLUSTER_AFTER_EDGER, "all", $dep,$vars,"Rscript",$cfg->{monkeyPoo}, "51c.cluster.R"); # output goes into the summaryFigureDir
 		
 		writeup($cfg, qq{We also generated PCA plots.\n}
 			, {"CITE_PCA"=>qq{PCA plots: No citation yet.} } );
