@@ -2,6 +2,36 @@
 eval 'exec /bin/perl -w -S $0 ${1+"$@"}'
 if 0; # not running under some shell
 
+######################################################################################################################################
+# Edited by Wil Maguire 2019
+#
+# Monkey can be executed in two ways:
+# 1. Interactively
+#     * Login to a development node like qb3-dev2
+#     * Execute the monkey_agw executable with config file
+#     * /wynton/group/gladstone/biocore/MonkeyPipeline/monkey_agw /wynton/group/gladstone/biocore/wynton_test/hg19.config.cfg.txt
+#     * This part is not very compute intensive and should complete within a minute
+#     * Run 'qstat' to see jobs - run 'watch qstat' to monitor jobs
+#
+# 2. Submit a qsub script
+#     * From one of the login nodes, or from a dev node
+#     * Example qsub script named 'script.sh':
+#       >     #!/bin/bash
+#       >     #$ -N Monkey_qsub
+#       >     #$ -pe smp 1
+#       >     #$ -m abe
+#       >     #$ -l h_vmem=1G
+#       >     #$ -o /wynton/group/gladstone/biocore/output/
+#       >     #$ -e /wynton/group/gladstone/biocore/output/
+#       >     #$ -V
+#       >
+#       >     /wynton/group/gladstone/biocore/MonkeyPipeline/monkey_agw /wynton/group/gladstone/biocore/wynton_test/hg19.config.cfg.txt
+#     * Execute as: qsub script.sh
+#     * This will provide the same behavior, but the computation of building the job submission list is done on a compute node
+#
+#
+######################################################################################################################################
+#
 # Sean Thomas and Alex WIlliams 2013-2016
 # version 2 - parallelized for Rigel / works with TORQUE PBS scheudler (should work with other PBS schedulers). Can operate without a scheduler if you add "--notorque" to the command line.
 

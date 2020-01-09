@@ -2,6 +2,35 @@
 eval 'exec /bin/perl -w -S $0 ${1+"$@"}'
 if 0; # not running under some shell
 
+######################################################################################################################################
+#
+# bananas_agw.pm version 2.Wynton.sge - Edited for use on Wynton running SGE
+# Editor: Wil Maguire, 2019
+# This git repo should live at /wynton/group/gladstone/biocore/MonkeyPipeline where MonkeyPipeline is the top folder of the repo.
+# Dependent on /wynton/group/gladstone/third_party/monkey_path directory
+#    * This directory contains sym links to all executables used by Monkey
+#    * This directory will be both added to $PATH and exported in bashrc as $BINFBINROOT
+#
+# # Paths updated to storage on Wynton
+# # Scheduler commands updated for use with SGE
+# # In addition to translating the SGE commands, directives were added: -V and -terse
+# #     * -V ensures users environment is in play during job execution
+# #     * -terse outputs only the jobid. This is needed for the creation of the job holding dependencies.
+# # Exculsion of verifying Rscript execution
+# #     * this was done to work around shell execution of the scripts
+# #     * helper scripts are written to execute by shell/bash that will launch the correct Rscript
+# # Evaluation of script execution for all bin *.pl perl scripts
+# # Vars like pbs_ncpus and pbs_mem being used in the function buildJobSubmissionScript should be updated to respective SGE language
+# #     * these are not causing issues, in fact the proper resources are being allocated so it's mostly for appearance
+# #
+#
+# ----Tuning----
+# Now that monkey is successfully running on Wynton, the jobs can be tuned to use more resources
+# as this was initially built for a system that only had 6 cores. You'll see in the submission that
+# parallelized jobs are requesting only 6 cores and they might be able to use more.
+#
+######################################################################################################################################
+#
 # bananas.pm version 2 - parallelized for rigel
 # Authors: Sean Thomas and Alex Williams, 2013
 # This program is designed to automate many of the tasks that accompany next generation sequencing tasks. 
