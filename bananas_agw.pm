@@ -5,7 +5,7 @@ if 0; # not running under some shell
 ######################################################################################################################################
 #
 # bananas_agw.pm version 2.Wynton.sge - Edited for use on Wynton running SGE
-# Editor: Wil Maguire, 2019
+# Edited by Wil Maguire 2019
 # This git repo should live at /wynton/group/gladstone/biocore/MonkeyPipeline where MonkeyPipeline is the top folder of the repo.
 # Dependent on /wynton/group/gladstone/third_party/monkey_path directory
 #    * This directory contains sym links to all executables used by Monkey
