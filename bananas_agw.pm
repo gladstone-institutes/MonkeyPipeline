@@ -509,6 +509,18 @@ sub validateScriptOrDie($$) { # Validate that a script exists. Intentionally doe
 		print STDERR "skipping 51c.cluster.R check";
 		return;
 	}
+	if ($scriptPath =~ m/50b.edgeR.R$/i) { # hard-coded check for this one file to skip
+		print STDERR "skipping 50b.edgeR.R check";
+		return;
+	}
+	if ($scriptPath =~ m/51b.summary.R$/i) { # hard-coded check for this one file to skip
+		print STDERR "skipping 51b.summary.R check";
+		return;
+	}
+	if ($scriptPath =~ m/51a.monocle.R$/i) { # hard-coded check for this one file to skip
+		print STDERR "skipping 51a.monocle.R check";
+		return;
+	}
 
 	# ================ CHECK R SYNTAX. This is VERY ANNOYING in comparison to perl ================
 	if ($scriptPath =~ /[.](R|Rscript)$/i and (!$remember{$REM_SCRIPTS_CHECKED}{$scriptPath}))
